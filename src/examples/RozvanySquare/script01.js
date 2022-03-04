@@ -272,12 +272,14 @@ function collectResults(responseJson) {
           scene.remove(child)
       }
   })
-
-    /*object.traverse(function (child) {
+    /*
+    object.traverse(function (child) {
       if (child.isLine) {
+        console.log(child.userData.attributes.geometry.userStringCount)
+        console.log(child.isLine)
         console.log(child)
         if (child.userData.attributes.geometry.userStringCount > 0) {
-          var name = child.userData.attributes.userStrings[0][1];
+          var name = child.userData.attributes.geometry.userStrings[0][1];
           console.log(name);
           if (name == "positive") { child.material = materialLightGray; }
           if (name == "negative") { child.material = materialLightGray; }
@@ -297,15 +299,6 @@ function collectResults(responseJson) {
 
   })
 }
-
-// add object graph from rhino model to three.js scene
-//scene.add( object )
-
-// hide spinner and enable download button
-//showSpinner(false)
-//downloadButton.disabled = false
-
-
 
 // BOILERPLATE //
 
