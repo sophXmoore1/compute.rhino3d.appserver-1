@@ -226,6 +226,7 @@ function decodeItem(item) {
 }
 
 function collectResults(responseJson) {
+
   const values = responseJson.values
 
   console.log(values)
@@ -262,6 +263,18 @@ function collectResults(responseJson) {
     return
   }
 
+  // go through the objects in the Rhino document
+  let objects = doc.objects();
+  for (let i = 0; i < objects.count; i++) {
+    const rhinoObject = objects.get(i);
+
+    // asign geometry userstrings to object attributes
+    if (rhinoObject.geometry().userStringCount > 0) {
+      const g_userStrings = rhinoObject.geometry().getUserStrings()
+      rhinoObject.attributes().setUserString(g_userStrings[0][0], g_userStrings[0][1])
+    }
+  }
+
   // load rhino doc into three.js scene
   const buffer = new Uint8Array(doc.toByteArray()).buffer
   loader.parse(buffer, function (object) {
@@ -269,17 +282,18 @@ function collectResults(responseJson) {
     // clear objects from scene
     scene.traverse(child => {
       if (!child.isLight) {
-          scene.remove(child)
+        scene.remove(child)
       }
-  })
-    /*
-    object.traverse(function (child) {
+    })
+
+    ///////////////////////////////////////////////////////////////////////
+
+    // color crvs
+    object.traverse(child => {
       if (child.isLine) {
-        console.log(child.userData.attributes.geometry.userStringCount)
-        console.log(child.isLine)
         console.log(child)
         if (child.userData.attributes.geometry.userStringCount > 0) {
-          var name = child.userData.attributes.geometry.userStrings[0][1];
+          const name = child.userData.attributes.userStrings[0][1];
           console.log(name);
           if (name == "positive") { child.material = materialLightGray; }
           if (name == "negative") { child.material = materialLightGray; }
@@ -292,13 +306,69 @@ function collectResults(responseJson) {
 
         }
       }
-    })*/
+    })
+
+    ///////////////////////////////////////////////////////////////////////
+    // add object graph from rhino model to three.js scene
+    scene.add(object)
+
+    // hide spinner and enable download button
+    showSpinner(false)
+    //downloadButton.disabled = false
+
+  })
+}
+
+/*
+  // load rhino doc into three.js scene
+  const buffer = new Uint8Array(doc.toByteArray()).buffer
+  loader.parse(buffer, function (object) {
+
+    // clear objects from scene
+    scene.traverse(child => {
+      if (!child.isLight) {
+          scene.remove(child)
+      }
+  })
+  
+    /*
+    object.traverse(child => {
+      if (child.isLine) {
+        console.log(child)
+        if (child.userData.attributes.geometry.userStringCount > 0) {
+          const name = child.userData.attributes.geometry.userStrings[0][1];
+          console.log(name);
+          if (name == "positive") { child.material = materialLightGray; }
+          if (name == "negative") { child.material = materialLightGray; }
+          if (name == "junction") { child.material = materialPink; }
+          if (name == "edge") { child.material = materialOrange; }
+          if (name == "internal") { child.material = materialYellow; }
+          if (name == "free") { child.material = materialGreen; }
+          if (name == "pinned") { child.material = materialTeal; }
+          if (name == "fixed") { child.material = materialBlue; }
+
+        }
+      }
+    })
+  
+          // color crvs
+          object.traverse(child => {
+            if (child.isLine) {
+              if (child.userData.attributes.geometry.userStringCount > 0) {
+                //console.log(child.userData.attributes.geometry.userStrings[0][1])
+                const col = child.userData.attributes.geometry.userStrings[0][1]
+                const threeColor = new THREE.Color( "rgb(" + col + ")")
+                const mat = new THREE.LineBasicMaterial({color:threeColor})
+                child.material = mat
+              }
+            }
+          })
+          
     scene.add(object)
     // hide spinner
     document.getElementById('loader').style.display = 'none'
 
-  })
-}
+  })*/
 
 // BOILERPLATE //
 
