@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Rozvany Square</title>
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <style>
+            body { margin: 0; font-family: 
+                Arial, Helvetica, sans-serif; 
+
+            }
+            input {width: 90%;}
+            #container {
+                display: flex;
+            }
+            #sidebar {  
+                z-index: 1; 
+                flex: 0 0 200px;
+                /*background-color: rgba(155, 145, 150, 0.5);*/
+                background-color: rgb(51, 51, 51);
+                padding-left: 10px;
+                padding-right: 10px;
+                padding-top: 5px;
+                height: 100vh;
+                float: left;
+                }
+            h1{
+                margin-top: 10px;
+                margin-bottom: 10px;
+                color: white;
+            }
+
+            #geomContainer{
+            flex: 1;
+            height: 100%;
+            }
+
+            #loader {
+                border: 5px solid #f3f3f3; /* Light grey */
+                border-top: 5px solid #3d3d3d; /* Grey */
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 2;
+            }
+
+            .fixity{
+                width : 500px;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            .radio-toolbar {
+            margin: 5px;
+            }
+
+            /*hide circular radio buttons*/
+            .radio-toolbar input[type="radio"] {
+            opacity: 0;
+            position: fixed;
+            width: 0;
+            }
+
+            .radio-toolbar label {
+                display: inline-block;
+                background-color: #ddd;
+                padding: 5px 5px;
+                font-family: sans-serif, Arial;
+                font-size: 8px;
+                border-radius: 5px;
+            }
+
+            .radio-toolbar label:hover {
+            background-color: white;
+            cursor: pointer;
+            }
+
+            .radio-toolbar input[type="radio"],input[value = "-1"]:checked + label {
+                background-color: rgb(11, 194, 5);
+                color: black;
+                border: 1px solid white;
+            }
+            .radio-toolbar input[type="radio"],input[value = "0"]:checked + label {
+                background-color: cyan;
+                color: black;
+                border: 1px solid white;
+            }
+            .radio-toolbar input[type="radio"],input[value = "1"]:checked + label {
+                background-color: blue;
+                color: white;
+                border: 1px solid white;
+            }
+
+            .radiolabel
+            {
+                font-size: 10px;
+                display: inline-block;
+                text-align: left;
+                width: 40px;
+                font-weight: bold;
+                color: white;
+            }
+
+            .slider{
+                -webkit-appearance: none;
+                width: 120px;
+                height: 8px;
+                border-radius: 5px;
+            }
+
+            .slider::-webkit-slider-thumb{
+                -webkit-appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 12px;
+                background-color: magenta;
+                cursor: pointer;
+            }
+
+            .sliderLabel{
+                font-size: 10px;
+                width: 40px;
+                display: inline-block;
+                font-weight: bold;
+                color: white;
+            }
+
+            #edge {
+                font-size: 11px;
+                text-align: left;
+                padding: 1px;
+                font-weight: bold;
+                text-decoration: none;
+                font-style: normal;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                border-style: solid;
+                border-color: gray;
+                background-color: gray;
+                color: rgb(227, 224, 224);
+                letter-spacing: 0.2px;
+                border-radius: 0px;
+            }
+
+            #descr{
+                text-align: left;
+                font-size: 10px;
+                text-align: left;
+                padding: 1px;
+                color: white;
+            }
+            #params{
+                padding: 0px;
+                background-color: rgb(51, 51, 51);
+                border-radius: 0px;
+            }
+
+            #errorMessage{
+                background-color: red;
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                width: 100%;
+                position: absolute;
+            }
+            #downloadButton{
+                background-color: transparent;
+                border: 1px solid;
+                border-color:#f3f3f3;
+                height:30px;
+                width: 30px;
+                border-radius: 20px;  
+            }
+            #downloadButton:hover{
+                cursor: pointer;
+                border: 2px solid orange;
+            }
+            img{
+                width: 15px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="loader"></div> 
+        <div id="container">
+            <div id="sidebar">
+                <h1>Optimal Structural Layout Generator</H1>
+                <p id = "descr">Based on derivations from <em>Optimal Design of Flexural Systems: Beams, Grillages, Slabs, Plates, and Shells</em> by G.I.N. Rozvany</p>
+                <div id = "params">
+                    <hr>
+                    <p id = "descr"><em>--------&emsp;Positive Curvature</em></p>
+                    <p id = "descr"><em>-- -- --&emsp;Negative Curvature</em></p>
+                    <hr>
+                    <p id = "edge"> Geometry</p>
+                    <div>
+                        <label class = "sliderLabel" for="X_Dim">X Size</label>
+                        <input class = "slider" type="range" id="X_Dim" name="X_Dim" min="5" max="20" value="12" step="1">
+                    </div>
+                    <div>
+                        <label class = "sliderLabel" for="Y_Dim">Y Size</label>
+                        <input class = "slider" type="range" id="Y_Dim" name="Y_Dim" min="5" max="20" value="12" step="1">
+                    </div>
+                    <div>
+                        <label class = "sliderLabel" for="spacing">Spacing</label>
+                        <input class = "slider" type="range" id="spacing" name="spacing" min="0.4" max="1.2" value="0.7" step="0.1">
+                    </div>
+                    <hr>
+                    <p id = "edge">Boundary Conditions</p>
+                    
+                    <div class="radio-toolbar">
+                        <span class = "radiolabel">Top</span>
+                        <input type="radio" id="topFree" name="radioTop" value="-1" >
+                        <label for="topFree">Free</label>
+
+                        <input type="radio" id="topPin" name="radioTop" value="0" checked>
+                        <label for="topPin">Pinned</label>
+
+                        <input type="radio" id="topFixed" name="radioTop" value="1">
+                        <label for="topFixed">Fixed</label> 
+                    </div>
+
+                    <div class="radio-toolbar">
+                        <span class = "radiolabel">Left</span>
+                        <input type="radio" id="leftFree" name="radioLeft" value="-1" >
+                        <label for="leftFree">Free</label>
+
+                        <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
+                        <label for="leftPin">Pinned</label>
+
+                        <input type="radio" id="leftFixed" name="radioLeft" value="1">
+                        <label for="leftFixed">Fixed</label> 
+                    </div>
+                    
+                    <div class="radio-toolbar">
+                        <span class = "radiolabel">Right</span>
+                        <input type="radio" id="rightFree" name="radioRight" value="-1" >
+                        <label for="rightFree">Free</label>
+
+                        <input type="radio" id="rightPin" name="radioRight" value="0" checked>
+                        <label for="rightPin">Pinned</label>
+
+                        <input type="radio" id="rightFixed" name="radioRight" value="1">
+                        <label for="rightFixed">Fixed</label> 
+                    </div>
+
+                    <div class="radio-toolbar">
+                        <span class = "radiolabel">Bottom</span>
+                        <input type="radio" id="botFree" name="radioBottom" value="-1">
+                        <label for="botFree">Free</label>
+
+                        <input type="radio" id="botPin" name="radioBottom" value="0" checked>
+                        <label for="botPin">Pinned</label>
+
+                        <input type="radio" id="botFixed" name="radioBottom" value="1" >
+                        <label for="botFixed">Fixed</label> 
+                    </div>
+                    
+                    <hr>
+                    <button id="downloadButton" onclick="download()"><img src = "image.png"</button>
+                </div>
+                <br>
+                
+            </div>
+            <div id = "geomContainer">
+                <div id="errorMessage"></div>
+            </div>
+
+        </div>
+        <script type="module" src="script01.js"></script>
+    </body>
+</html>
