@@ -28,8 +28,7 @@ leftFix (-1, 0 1)
 A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.
 
 **DRAW INPUTS**
-Points - to be assigned by the user in the canvas which represent column placements
-2 Points - to be assigned by the user in the canvas which are the end point of a line to represent a boundary or a wall.
+Points - to be assigned by the user in the canvas which represent column placements. 2 Points - to be assigned by the user in the canvas which are the end point of a line to represent a boundary or a wall. 
 3 Points - to be assigned by the user in the canvas to form an arch which can represent a boundary or a wall.
 
 **Draw OUTPUTS**
