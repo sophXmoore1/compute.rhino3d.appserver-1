@@ -2,20 +2,23 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.126.0/build/three.module.js'
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.126.0/examples/jsm/controls/OrbitControls.js'
 import rhino3dm from 'https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/rhino3dm.module.js'
+import { RhinoCompute } from 'https://cdn.jsdelivr.net/npm/compute-rhino3d@0.13.0-beta/compute.rhino3d.module.js'
 import { Rhino3dmLoader } from 'https://cdn.jsdelivr.net/npm/three@0.124.0/examples/jsm/loaders/3DMLoader.js'
+import { TransformControls } from 'https://cdn.jsdelivr.net/npm/three@0.126.0/examples/jsm/controls/TransformControls.js'
 
 //set up new loader for converting the results to THREEjs
 const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
-//Define Variables
+//Define grasshopper script
 const definition = 'RozvanyDraw.gh'
-const mouse = new THREE.Vector3()
-const canvasContainer = document.querySelector('#canvasContainer')
 
 //spinner
 showSpinner(false);
 
+//Initialize Variables
+const mouse = new THREE.Vector3()
+const canvasContainer = document.querySelector('#canvasContainer')
 
 //Define Materials
 const material = new THREE.LineBasicMaterial({
@@ -49,7 +52,7 @@ addLine.addEventListener('click', AddLine)
 const computeButton = document.getElementById('compute')
 computeButton.addEventListener('click', compute)
 
-//Intialize data objects
+//Intialize data objecys
 let data = {}
 data.definition = definition
 data.inputs = {
@@ -82,7 +85,7 @@ function AddBoundary() {
 
 function Close() {
   //check that atleast 4 points have been added
-  if(numBoundPoints < 4){
+  if(numPoints < 4){
     document.getElementById('errorMessage').innerText = 'need atleast 4 points to close boundary'
   }
   else{
@@ -90,19 +93,16 @@ function Close() {
     canvasContainer.removeEventListener('click', onClickBound, false) 
     
     //draw closing boundary line
-    const points = [boundVectors[boundVectors.length-1], boundVectors[0]]
+    const points = [vectors[vectors.length-1], vectors[0]]
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
     const line = new THREE.Line( geometry, material );
     console.log(line)
     scene.add(line);
   }
+
 }
 
 function AddPoints() {
-  //remove event listeners
-  canvasContainer.removeEventListener('click', onClickLine, false)
-  
-  //add event listener for column poibnts
   canvasContainer.addEventListener('click', onClickCol, false);
 }
 
@@ -110,18 +110,12 @@ function AddArc() {
 }
 
 function AddLine() {
-  canvasContainer.removeEventListener('click', onClickCol, false)
-  //canvasContainer.removeEventListener('click', onClickArc, false)
-
-  //add event listener for column poibnts
-  canvasContainer.addEventListener('click', onClickLine, false);
 }
 
 //Click Events
-var numBoundPoints = 0;
-var numLinePoints = 0;
-const boundVectors = [];
-const lineVectors = [];
+var numPoints = 0;
+const vectors = [];
+const ptCoords = [];
 
 function onClickBound(event){
   // calculate mouse position in normalized device coordinates
@@ -133,29 +127,42 @@ function onClickBound(event){
 
   console.log( `${mouse.x},${mouse.y},${mouse.z}` )
 
-  boundVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
+  ptCoords.push(mouse.x, mouse.y, 0)
+  vectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
+  console.log(ptCoords)
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
   let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
   data.inputs['boundaryPoints'].push(pt)
+  console.log(data)
+
+  //add transform controls to points
+ /* const icoGeo = new THREE.IcosahedronGeometry(25)
+  const icoMat = new THREE.MeshNormalMaterial()
+  const ico = new THREE.Mesh( icoGeo, icoMat )
+  ico.name = 'ico'
+  ico.position.set(mouse.x, mouse.y, 0)
+  scene.add( ico )
+  let tcontrols = new TransformControls(camera, renderer.domElement)
+  tcontrols.enabled = false //controls not enalbed until boundary closed
+  tcontrols.attach(ico)
+  tcontrols.showZ = false
+  scene.add(tcontrols)*/
   
   //create Three.js Line and material and add to scene
-  numBoundPoints = numBoundPoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
+  numPoints = numPoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
 
   const points = [];
-  if (numBoundPoints > 1){
-    points.push(boundVectors[boundVectors.length-2])
-    points.push(boundVectors[boundVectors.length-1])
+  if (numPoints > 1){
+    points.push(vectors[vectors.length-2])
+    points.push(vectors[vectors.length-1])
+    console.log(points)
   }
-
-  const circGeometry = new THREE.CircleGeometry( 2, 32 );
-  const circle = new THREE.Mesh( circGeometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
-
   const geometry = new THREE.BufferGeometry().setFromPoints( points );
   const line = new THREE.Line( geometry, material );
+  console.log(line)
   scene.add(line);
+
 }
 
 function onClickCol(event){
@@ -176,40 +183,6 @@ function onClickCol(event){
   const circle = new THREE.Mesh( geometry, material );
   circle.position.set(mouse.x, mouse.y, mouse.z)
   scene.add( circle );
-}
-
-function onClickLine(event){
-  // calculate mouse position in normalized device coordinates
-  // (-1 to +1) for both components
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
-  mouse.z = 0
-  mouse.unproject(camera)
-
-  lineVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
-
-  // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
-  data.inputs['linePoints'].push(pt)
-  console.log(data)
-  
-  //create Three.js Line and material and add to scene
-  numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
-
-  const points = [];
-  if (numLinePoints > 1 && numLinePoints%2 == 0){
-    points.push(lineVectors[lineVectors.length-2])
-    points.push(lineVectors[lineVectors.length-1])
-  }
-
-  const circGeometry = new THREE.CircleGeometry( 5, 32 );
-  const circle = new THREE.Mesh( circGeometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
-
-  const geometry = new THREE.BufferGeometry().setFromPoints( points );
-  const line = new THREE.Line( geometry, material );
-  scene.add(line);
 }
 
 //Call appserver
@@ -315,6 +288,7 @@ function collectResults(responseJson) {
     
     // clear objects from scene
     scene.traverse(child => {
+      console.log(child);
       if (child.Line) {
         scene.remove(child)
       }
