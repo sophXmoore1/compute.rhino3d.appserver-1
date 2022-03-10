@@ -56,7 +56,7 @@ data.inputs = {
   'spacing': spacing_slider.valueAsNumber,
   'boundaryPoints': [],
   'colPoints': [],
-  'linePoints': [],
+  'lnPoints': [],
   'arcPoints': []
 }
 
@@ -93,7 +93,6 @@ function Close() {
     const points = [boundVectors[boundVectors.length-1], boundVectors[0]]
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
     const line = new THREE.Line( geometry, material );
-    console.log(line)
     scene.add(line);
   }
 }
@@ -131,8 +130,6 @@ function onClickBound(event){
   mouse.z = 0
   mouse.unproject(camera)
 
-  console.log( `${mouse.x},${mouse.y},${mouse.z}` )
-
   boundVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
@@ -165,12 +162,9 @@ function onClickCol(event){
   mouse.z = 0
   mouse.unproject(camera)
 
-  console.log( `${mouse.x},${mouse.y},${mouse.z}` )
-
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
   let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
   data.inputs['colPoints'].push(pt)
-  console.log(data)
   
   const geometry = new THREE.CircleGeometry( 5, 32 );
   const circle = new THREE.Mesh( geometry, material );
@@ -190,8 +184,7 @@ function onClickLine(event){
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
   let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
-  data.inputs['linePoints'].push(pt)
-  console.log(data)
+  data.inputs['lnPoints'].push(pt)
   
   //create Three.js Line and material and add to scene
   numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
@@ -227,11 +220,9 @@ async function compute() {
     'body': JSON.stringify(data),
     'headers': { 'Content-Type': 'application/json' }
   }
-  console.log(request)
 
   try {
     const response = await fetch('/solve', request)
-    console.log(response)
 
     if (!response.ok) {
       throw new Error(response.statusText)
@@ -262,7 +253,7 @@ function decodeItem(item) {
 function collectResults(responseJson) {
 
   const values = responseJson.values
-  console.log(values)
+  console.log(values) //logs gh outputs
 
   // clear doc
   try {
