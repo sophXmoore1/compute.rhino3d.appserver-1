@@ -9,13 +9,12 @@ const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 //Define Variables
-const definition = 'RozvanyDraw.gh'
+const definition = 'RozvanyDraw01.gh'
 const mouse = new THREE.Vector3()
 const canvasContainer = document.querySelector('#canvasContainer')
 
 //spinner
 showSpinner(false);
-
 
 //Define Materials
 const material = new THREE.LineBasicMaterial({
@@ -39,9 +38,6 @@ addPoints.addEventListener('click', AddPoints)
 
 const addLine = document.getElementById('line')
 addLine.addEventListener('click', AddLine)
-
-const finishLine = document.getElementById('finishLine')
-//finishLine.addEventListener('click', FinishLine)
 
 const computeButton = document.getElementById('compute')
 computeButton.addEventListener('click', compute)
@@ -100,14 +96,15 @@ function AddPoints() {
   //remove event listeners
   canvasContainer.removeEventListener('click', onClickLine, false)
   
-  //add event listener for column points
+  //add event listener for column poibnts
   canvasContainer.addEventListener('click', onClickCol, false);
 }
 
 function AddLine() {
   canvasContainer.removeEventListener('click', onClickCol, false)
+  //canvasContainer.removeEventListener('click', onClickArc, false)
 
-  //add event listener for column points
+  //add event listener for column poibnts
   canvasContainer.addEventListener('click', onClickLine, false);
 }
 
@@ -159,15 +156,13 @@ function onClickCol(event){
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
   let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
-  data.inputs['lnPoints'].push(pt)
+  data.inputs['colPoints'].push(pt)
   
   const geometry = new THREE.CircleGeometry( 5, 32 );
   const circle = new THREE.Mesh( geometry, material );
   circle.position.set(mouse.x, mouse.y, mouse.z)
   scene.add( circle );
 }
-
-
 
 function onClickLine(event){
   // calculate mouse position in normalized device coordinates
@@ -187,39 +182,6 @@ function onClickLine(event){
   numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
 
   const points = [];
-  if (numLinePoints > 1 && numLinePoints%2 == 0){
-    points.push(lineVectors[lineVectors.length-2])
-    points.push(lineVectors[lineVectors.length-1])
-  }
-
-  const circGeometry = new THREE.CircleGeometry( 5, 32 );
-  const circle = new THREE.Mesh( circGeometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
-
-  const geometry = new THREE.BufferGeometry().setFromPoints( points );
-  const line = new THREE.Line( geometry, material );
-  scene.add(line);
-}
-
-//const curvePoints = new rhino.Point3dList((0,0,0))
-/*
-function onClickLine(event){
-  // calculate mouse position in normalized device coordinates
-  // (-1 to +1) for both components
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
-  mouse.z = 0
-  mouse.unproject(camera)
-
-  // add json-encoded Point3d to rhino.NurbsCurve
-  curvePoints.add( mouse.x, mouse.y, 0 )
-  
-  //Three JS visualization
-  numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
-  lineVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
-
-  const points = [];
   if (numLinePoints > 1){
     points.push(lineVectors[lineVectors.length-2])
     points.push(lineVectors[lineVectors.length-1])
@@ -235,31 +197,10 @@ function onClickLine(event){
   scene.add(line);
 }
 
-function FinishLine(){
-  //check that atleast 2 points have been added
-  if(numLinePoints < 2){
-    document.getElementById('errorMessage').innerText = 'need atleast 2 points to finish drawing line'
-  }
-  else{
-    //remove add boundary point event listener
-    canvasContainer.removeEventListener('click', onClickLine, false) 
-    
-    //Push curve to data.inputs
-    const nurbsCurve = rhino.NurbsCurve.create( false, 1, curvePoints )
-    console.log(nurbsCurve)
-  }
-}
-*/
-
 //Call appserver
 async function compute() {
   //start spinner
   showSpinner(true);
-
-  //remove event listeners
-  canvasContainer.removeEventListener('click', onClickBound, false)
-  canvasContainer.removeEventListener('click', onClickCol, false)
-  canvasContainer.removeEventListener('click', onClickLine, false)
 
   let t0 = performance.now()
   const timeComputeStart = t0
