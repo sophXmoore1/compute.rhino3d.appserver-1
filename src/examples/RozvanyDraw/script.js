@@ -125,7 +125,7 @@ function onClickBound(event){
   boundVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
+  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
   data.inputs['boundaryPoints'].push(pt)
   
   //create Three.js Line and material and add to scene
@@ -155,7 +155,7 @@ function onClickCol(event){
   mouse.unproject(camera)
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
+  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
   data.inputs['colPoints'].push(pt)
   
   const geometry = new THREE.CircleGeometry( 5, 32 );
@@ -175,7 +175,7 @@ function onClickLine(event){
   lineVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
 
   // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":"+mouse.z+"}"
+  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
   data.inputs['lnPoints'].push(pt)
   
   //create Three.js Line and material and add to scene
