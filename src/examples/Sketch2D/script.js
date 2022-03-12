@@ -13,7 +13,6 @@ let _model = {
   viewport: null,
 }
 
-
 // wait for the rhino3dm web assembly to load asynchronously
 let rhino
 rhino3dm().then(async m => {

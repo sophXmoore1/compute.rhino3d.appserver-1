@@ -6,28 +6,52 @@
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
         <style>
             body { margin: 0; font-family: 
-                Arial, Helvetica, sans-serif; 
+                Arial, Helvetica, sans-serif;    
             }
             #container {
-                display: flex;
+                width: 100%;
+                height:100vh;
+                background-color: rgb(108, 108, 108);
+                justify-content: center;
             }
-            #sidebar {
+            #controls{
                 position: absolute;
-                width: 200px;
-                background-color: rgb(51, 51, 51);
-                padding-left: 10px;
-                padding-right: 10px;
-                padding-top: 5px;
-                height: 100vh;
-                float: left;
+                left: 50%;
+                width:max-content;
+                transform: translate(-50%, -50%);
+                bottom: 0px;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding: 5px;
+                padding-left: 15px;
+                padding-right: 15px;
+                border-radius: 50px;
                 }
-            canvas{
-                height: 100%;
-            }
-            h1{
-                margin-top: 10px;
-                margin-bottom: 10px;
+            #directions{
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                bottom: 90px;
                 color: white;
+            }
+            #title{
+                position: absolute;
+                color: white;
+                margin: 10px;
+                font-size: 40px;
+                font-weight: bold;
+            }
+            button{
+                border-radius: 20px;
+                margin: 5px;
+                background-color: white;
+                width: 30px;
+                height: 30px;
+                border: 0px;;
+                font-size: 20px;
+            }
+            canvas{
+                height: 100vh;
+                width: 100%
             }
             #loader {
                 border: 5px solid #f3f3f3; /* Light grey */
@@ -45,89 +69,61 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
-            .slider{
-                -webkit-appearance: none;
-                width: 120px;
-                height: 8px;
-                border-radius: 5px;
+            .button{
+                float: left;
+                padding: 5px;
+                position: relative;
             }
-
-            .slider::-webkit-slider-thumb{
-                -webkit-appearance: none;
-                width: 16px;
-                height: 16px;
-                border-radius: 12px;
-                background-color: magenta;
-                cursor: pointer;
-            }
-
-            .sliderLabel{
-                font-size: 10px;
-                width: 40px;
-                display: inline-block;
-                font-weight: bold;
-                color: white;
-            }
-            #descr{
-                text-align: left;
-                font-size: 10px;
-                text-align: left;
-                padding: 1px;
-                color: white;
-            }
-            #errorMessage{
-                background-color: red;
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                width: 100%;
+            .content{
                 position: absolute;
-            }
-            #downloadButton{
-                background-color: transparent;
-                border: 1px solid;
-                border-color:#f3f3f3;
-                height:30px;
-                width: 30px;
-                border-radius: 20px;  
-            }
-            #downloadButton:hover{
-                cursor: pointer;
-                border: 2px solid orange;
-            }
-            img{
-                width: 15px;
-            }
-            #errorMessage{
-                background-color: red;
+                top: -15px;
+                left: 35px;
+                display: none;
                 color: white;
-                font-size: 12px;
-                text-align: center;
-                width: 100%;
-                position: absolute;
+                background-color: rgba(222, 222, 222, 0.5);
+                border-radius: 20px;
+                padding: 5px;
+                padding-left: 10px;
+                padding-right: 10px;
+                width: max-content;
+            }
+            button:hover + .content{
+                display: block;
             }
 
         </style>
     </head>
     <body>
         <div id="loader"></div> 
+        <div id = "title">Rozvany<br>.Draw</div>
         <div id="container">
-            <div id="sidebar">
-                <h1>Optimal Structural Layout Generator</H1>
-                <p id = "descr">Based on derivations from <em>Optimal Design of Flexural Systems: Beams, Grillages, Slabs, Plates, and Shells</em> by G.I.N. Rozvany</p>
-                <button id = "border">Add Boundary Points</button>
-                <button id = "column">Add Column Points</button>
-                <button id = "line">Add Line Points</button>
-                <button id = "compute">Compute</button>
-                <div>
-                    <label class = "sliderLabel" for="spacing">Spacing</label>
-                    <input class = "slider" type="range" id="spacing" name="spacing" min="5" max="20" value="10" step="1">
+                <p id = "directions"></p>
+                <div id = "controls">
+                    <div class = "button">
+                        <button id = "boundary">❑</button>
+                        <div class = "content">Draw Boundary</div>
+                    </div>
+                    <div class = "button">
+                        <button id = "line">/</button>
+                        <div class = "content">Draw Line Support</div>
+                    </div>
+                    <div class = "button">
+                        <button id = "column">•</button>
+                        <div class = "content">Draw Point Support</div>
+                    </div>
+                    <div class = "button">
+                    <button id = "compute">▦</button>
+                    <div class = "content">Compute</div>
+                    </div>
+                    <div class = "button">
+                        <button id = "reset">🞩</button>
+                        <div class = "content">Reset</div>
+                        </div>
+                    <div class = "button">
+                    <button id = "download">⤓</button>
+                    <div class = "content">Download</div>
+                    </div>
                 </div>
-                    <div id = "errorMessage"></div>
-                <hr>
-                <button id="downloadButton" onclick="download()"><img src = ""</button>
-                <br>
-            </div>
             <div id = "canvasContainer">
                 <canvas></canvas>
             </div>

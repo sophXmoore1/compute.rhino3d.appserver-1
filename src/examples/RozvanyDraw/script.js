@@ -16,21 +16,20 @@ const canvasContainer = document.querySelector('#canvasContainer')
 //spinner
 showSpinner(false);
 
+//starting message
+document.getElementById('directions').innerText = "click on FIXED or FREE BOUNDARY to start drawing"
+
 //Define Materials
 const material = new THREE.LineBasicMaterial({
   color: 0xcfcfcf
 });
 
 // set up download button click handlers
-const downloadButton = document.getElementById("downloadButton")
+const downloadButton = document.getElementById("download")
 downloadButton.onclick = download
 
 // event listeners
-const spacing_slider = document.getElementById('spacing')
-spacing_slider.addEventListener('mouseup', onSliderChange, false)
-spacing_slider.addEventListener('touchend', onSliderChange, false)
-
-const addBoundary = document.getElementById('border')
+const addBoundary = document.getElementById('boundary')
 addBoundary.addEventListener('click', AddBoundary)
 
 const addPoints = document.getElementById('column')
@@ -42,17 +41,18 @@ addLine.addEventListener('click', AddLine)
 const computeButton = document.getElementById('compute')
 computeButton.addEventListener('click', compute)
 
+const reset = document.getElementById('reset')
+reset.addEventListener('click', Reset)
+
 window.addEventListener('keyup', Close)
 
 //Intialize data objects
 let data = {}
 data.definition = definition
 data.inputs = {
-  'spacing': spacing_slider.valueAsNumber,
   'boundaryPoints': [],
   'colPoints': [],
   'lnPoints': [],
-  'arcPoints': []
 }
 
 //load the rhino3dm library
@@ -65,22 +65,22 @@ rhino3dm().then(async m => {
 })
 
 //slider change
-function onSliderChange() {
-  showSpinner(false)
-  compute()
-}
 
 //Enables element addition
 function AddBoundary() {
   canvasContainer.addEventListener('click', onClickBound, false);
+  document.getElementById('directions').innerText = "press ENTER to close boundary"
 }
 
 function Close() {
-  //check that atleast 4 points have been added
-  if(numBoundPoints < 4){
-    document.getElementById('errorMessage').innerText = 'need atleast 4 points to close boundary'
+  //check that atleast 3 points have been added
+  if(numBoundPoints < 3){
+    document.getElementById('directions').innerText = 'need at least 3 points to close boundary!'
   }
   else{
+    //change description message
+
+    document.getElementById('directions').innerText = ""
     //remove add boundary point event listener
     canvasContainer.removeEventListener('click', onClickBound, false) 
     
@@ -93,6 +93,7 @@ function Close() {
 }
 
 function AddPoints() {
+
   //remove event listeners
   canvasContainer.removeEventListener('click', onClickLine, false)
   
@@ -101,6 +102,8 @@ function AddPoints() {
 }
 
 function AddLine() {
+    document.getElementById('directions').innerText = "press ENTER to start new line"
+
   canvasContainer.removeEventListener('click', onClickCol, false)
   //canvasContainer.removeEventListener('click', onClickArc, false)
 
@@ -108,11 +111,32 @@ function AddLine() {
   canvasContainer.addEventListener('click', onClickLine, false);
 }
 
+function Reset(){
+    document.getElementById('directions').innerText = ""
+
+    data.inputs['boundaryPoints'] = []
+    data.inputs['colPoints'] = []
+    data.inputs['lnPoints'] = []
+
+    numBoundPoints = 0;
+    numLinePoints = 0;
+    boundVectors = []
+    lineVectors = []
+
+    while (scene.children.length>2){
+        for (let i = 0; i<scene.children.length-1; i++){
+            scene.remove(scene.children[2])
+            console.log(scene.children)
+        }
+     }
+     console.log(numLinePoints)
+}
+
 //Click Events
 var numBoundPoints = 0;
 var numLinePoints = 0;
-const boundVectors = [];
-const lineVectors = [];
+var boundVectors = [];
+var lineVectors = [];
 
 function onClickBound(event){
   // calculate mouse position in normalized device coordinates
@@ -180,7 +204,7 @@ function onClickLine(event){
   
   //create Three.js Line and material and add to scene
   numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
-
+    console.log(numLinePoints)
   const points = [];
   if (numLinePoints > 1){
     points.push(lineVectors[lineVectors.length-2])
@@ -201,6 +225,13 @@ function onClickLine(event){
 async function compute() {
   //start spinner
   showSpinner(true);
+
+  //remove event listeners
+  canvasContainer.removeEventListener('click', onClickLine, false)
+  canvasContainer.removeEventListener('click', onClickCol, false)
+  canvasContainer.removeEventListener('click', onClickBound, false)
+
+  document.getElementById('directions').innerText = ""
 
   let t0 = performance.now()
   const timeComputeStart = t0
@@ -366,7 +397,7 @@ function download() {
   let blob = new Blob([buffer], { type: "application/octect-stream" })
   let link = document.createElement('a')
   link.href = window.URL.createObjectURL(blob)
-  link.download = 'RozvanyLayout.3dm'
+  link.download = 'RozvanyDrawLayout.3dm'
   link.click()
 }
 
