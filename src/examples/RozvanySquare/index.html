@@ -1,279 +1,353 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Rozvany Square</title>
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <style>
-            body { margin: 0; font-family: 
-                Arial, Helvetica, sans-serif; 
 
-            }
-            input {width: 90%;}
-            #container {
-                display: flex;
-            }
-            #sidebar {  
-                z-index: 1; 
-                flex: 0 0 200px;
-                /*background-color: rgba(155, 145, 150, 0.5);*/
-                background-color: rgb(51, 51, 51);
-                padding-left: 10px;
-                padding-right: 10px;
-                padding-top: 5px;
-                height: 100vh;
-                float: left;
-                }
-            h1{
-                margin-top: 10px;
-                margin-bottom: 10px;
-                color: white;
-            }
+<head>
+    <meta charset="utf-8">
+    <title>Rozvany Draw</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            font-family:
+                Arial, Helvetica, sans-serif;
+        }
 
-            #geomContainer{
-            flex: 1;
-            height: 100%;
-            }
+        #container {
+            width: 100%;
+            height: 100vh;
+            background-color: rgb(108, 108, 108);
+            justify-content: center;
+        }
 
-            #loader {
-                border: 5px solid #f3f3f3; /* Light grey */
-                border-top: 5px solid #3d3d3d; /* Grey */
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                animation: spin 1s linear infinite;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                z-index: 2;
-            }
+        #controls {
+            position: absolute;
+            left: 50%;
+            bottom: 2%;
+            transform: translate(-50%, 0);
+            width: max-content;
+            background-color: rgba(198, 198, 198, 0.5);
+            padding: 5px;
+            border-radius: 40px;
+        }
 
-            .fixity{
-                width : 500px;
-            }
+        #directions {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            bottom: 90px;
+            color: white;
+        }
 
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
+        #title {
+            position: absolute;
+            color: white;
+            margin: 10px;
+            font-size: 40px;
+            font-weight: bold;
+        }
 
-            .radio-toolbar {
+        button {
+            border-radius: 20px;
             margin: 5px;
+            background-color: white;
+            width: 30px;
+            height: 30px;
+            border: 0px;
+            ;
+            font-size: 20px;
+        }
+
+        canvas {
+            height: 100vh;
+            width: 100%
+        }
+
+        #loader {
+            border: 5px solid #f3f3f3;
+            /* Light grey */
+            border-top: 5px solid #3d3d3d;
+            /* Grey */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 2;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            /*hide circular radio buttons*/
-            .radio-toolbar input[type="radio"] {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .button {
+            float: left;
+            padding: 5px;
+            position: relative;
+        }
+
+        .content {
+            position: absolute;
+            top: -25px;
+            left: 35px;
+            display: none;
+            color: white;
+            background-color: rgba(222, 222, 222, 0.5);
+            border-radius: 20px;
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            width: max-content;
+        }
+
+        button:hover+.content {
+            display: block;
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        .radio-toolbar {
+            margin: 5px;
+        }
+
+        /*hide circular radio buttons*/
+        .radio-toolbar input[type="radio"] {
             opacity: 0;
             position: fixed;
             width: 0;
-            }
+        }
 
-            .radio-toolbar label {
-                display: inline-block;
-                background-color: #ddd;
-                padding: 5px 5px;
-                font-family: sans-serif, Arial;
-                font-size: 8px;
-                border-radius: 5px;
-            }
+        .radio-toolbar label {
+            display: inline-block;
+            background-color: #ddd;
+            padding: 5px 5px;
+            font-family: sans-serif, Arial;
+            font-size: 8px;
+            border-radius: 5px;
+        }
 
-            .radio-toolbar label:hover {
+        .radio-toolbar label:hover {
             background-color: white;
             cursor: pointer;
-            }
+        }
 
-            .radio-toolbar input[type="radio"],input[value = "-1"]:checked + label {
-                background-color: rgb(11, 194, 5);
-                color: black;
-                border: 1px solid white;
-            }
-            .radio-toolbar input[type="radio"],input[value = "0"]:checked + label {
-                background-color: cyan;
-                color: black;
-                border: 1px solid white;
-            }
-            .radio-toolbar input[type="radio"],input[value = "1"]:checked + label {
-                background-color: blue;
-                color: white;
-                border: 1px solid white;
-            }
+        .radio-toolbar input[type="radio"],
+        input[value="-1"]:checked+label {
+            background-color: rgb(11, 194, 5);
+            color: black;
+            border: 1px solid white;
+        }
 
-            .radiolabel
-            {
-                font-size: 10px;
-                display: inline-block;
-                text-align: left;
-                width: 40px;
-                font-weight: bold;
-                color: white;
-            }
+        .radio-toolbar input[type="radio"],
+        input[value="0"]:checked+label {
+            background-color: cyan;
+            color: black;
+            border: 1px solid white;
+        }
 
-            .slider{
-                -webkit-appearance: none;
-                width: 120px;
-                height: 8px;
-                border-radius: 5px;
-            }
+        .radio-toolbar input[type="radio"],
+        input[value="1"]:checked+label {
+            background-color: blue;
+            color: white;
+            border: 1px solid white;
+        }
 
-            .slider::-webkit-slider-thumb{
-                -webkit-appearance: none;
-                width: 16px;
-                height: 16px;
-                border-radius: 12px;
-                background-color: magenta;
-                cursor: pointer;
-            }
+        .radiolabel {
+            font-size: 10px;
+            display: inline-block;
+            text-align: left;
+            width: 40px;
+            font-weight: bold;
+            color: white;
+        }
 
-            .sliderLabel{
-                font-size: 10px;
-                width: 40px;
-                display: inline-block;
-                font-weight: bold;
-                color: white;
-            }
+        .slider {
+            -webkit-appearance: none;
+            width: 120px;
+            height: 8px;
+            border-radius: 5px;
+        }
 
-            #edge {
-                font-size: 11px;
-                text-align: left;
-                padding: 1px;
-                font-weight: bold;
-                text-decoration: none;
-                font-style: normal;
-                margin-top: 5px;
-                margin-bottom: 5px;
-                border-style: solid;
-                border-color: gray;
-                background-color: gray;
-                color: rgb(227, 224, 224);
-                letter-spacing: 0.2px;
-                border-radius: 0px;
-            }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 12px;
+            background-color: magenta;
+            cursor: pointer;
+        }
 
-            #descr{
-                text-align: left;
-                font-size: 10px;
-                text-align: left;
-                padding: 1px;
-                color: white;
-            }
-            #params{
-                padding: 0px;
-                background-color: rgb(51, 51, 51);
-                border-radius: 0px;
-            }
+        .sliderLabel {
+            font-size: 10px;
+            width: 40px;
+            display: inline-block;
+            font-weight: bold;
+            color: white;
+        }
 
-            #errorMessage{
-                background-color: red;
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                width: 100%;
-                position: absolute;
-            }
-            #downloadButton{
-                background-color: transparent;
-                border: 1px solid;
-                border-color:#f3f3f3;
-                height:30px;
-                width: 30px;
-                border-radius: 20px;  
-            }
-            #downloadButton:hover{
-                cursor: pointer;
-                border: 2px solid orange;
-            }
-            img{
-                width: 15px;
-            }
+        #edge {
+            font-size: 11px;
+            text-align: left;
+            padding: 1px;
+            font-weight: bold;
+            text-decoration: none;
+            font-style: normal;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-style: solid;
+            background-color: rgb(63, 63, 63);
+            border-color: rgb(63, 63, 63);
+            color: rgb(227, 224, 224);
+            letter-spacing: 0.2px;
+            border-radius: 0px;
+        }
 
-        </style>
-    </head>
-    <body>
-        <div id="loader"></div> 
-        <div id="container">
-            <div id="sidebar">
-                <h1>Optimal Structural Layout Generator</H1>
-                <p id = "descr">Based on derivations from <em>Optimal Design of Flexural Systems: Beams, Grillages, Slabs, Plates, and Shells</em> by G.I.N. Rozvany</p>
-                <div id = "params">
-                    <hr>
-                    <p id = "descr"><em>--------&emsp;Positive Curvature</em></p>
-                    <p id = "descr"><em>-- -- --&emsp;Negative Curvature</em></p>
-                    <hr>
-                    <p id = "edge"> Geometry</p>
-                    <div>
-                        <label class = "sliderLabel" for="X_Dim">X Size</label>
-                        <input class = "slider" type="range" id="X_Dim" name="X_Dim" min="5" max="20" value="12" step="1">
-                    </div>
-                    <div>
-                        <label class = "sliderLabel" for="Y_Dim">Y Size</label>
-                        <input class = "slider" type="range" id="Y_Dim" name="Y_Dim" min="5" max="20" value="12" step="1">
-                    </div>
-                    <div>
-                        <label class = "sliderLabel" for="spacing">Spacing</label>
-                        <input class = "slider" type="range" id="spacing" name="spacing" min="0.4" max="1.2" value="0.7" step="0.1">
-                    </div>
-                    <hr>
-                    <p id = "edge">Boundary Conditions</p>
-                    
-                    <div class="radio-toolbar">
-                        <span class = "radiolabel">Top</span>
-                        <input type="radio" id="topFree" name="radioTop" value="-1" >
-                        <label for="topFree">Free</label>
+        #descr {
+            text-align: left;
+            font-size: 10px;
+            text-align: left;
+            padding: 1px;
+            color: white;
+        }
 
-                        <input type="radio" id="topPin" name="radioTop" value="0" checked>
-                        <label for="topPin">Pinned</label>
+        #params {
+            padding: 0px;
+            background-color: rgb(51, 51, 51);
+            border-radius: 0px;
+        }
 
-                        <input type="radio" id="topFixed" name="radioTop" value="1">
-                        <label for="topFixed">Fixed</label> 
-                    </div>
+        #errorMessage {
+            position: absolute;
+            background-color: red;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            width: max-content;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
-                    <div class="radio-toolbar">
-                        <span class = "radiolabel">Left</span>
-                        <input type="radio" id="leftFree" name="radioLeft" value="-1" >
-                        <label for="leftFree">Free</label>
+        #downloadButton {
+            background-color: transparent;
+            border: 1px solid;
+            border-color: #f3f3f3;
+            height: 30px;
+            width: 30px;
+            border-radius: 20px;
+        }
 
-                        <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
-                        <label for="leftPin">Pinned</label>
+        #downloadButton:hover {
+            cursor: pointer;
+            border: 2px solid orange;
+        }
 
-                        <input type="radio" id="leftFixed" name="radioLeft" value="1">
-                        <label for="leftFixed">Fixed</label> 
-                    </div>
-                    
-                    <div class="radio-toolbar">
-                        <span class = "radiolabel">Right</span>
-                        <input type="radio" id="rightFree" name="radioRight" value="-1" >
-                        <label for="rightFree">Free</label>
+        img {
+            width: 15px;
+        }
+        #geometry{
+            float: left;
+            margin: 10px;
+        }
+        #boundary{
+            float:right;
+            margin: 10px;
+        }
+    </style>
+</head>
 
-                        <input type="radio" id="rightPin" name="radioRight" value="0" checked>
-                        <label for="rightPin">Pinned</label>
-
-                        <input type="radio" id="rightFixed" name="radioRight" value="1">
-                        <label for="rightFixed">Fixed</label> 
-                    </div>
-
-                    <div class="radio-toolbar">
-                        <span class = "radiolabel">Bottom</span>
-                        <input type="radio" id="botFree" name="radioBottom" value="-1">
-                        <label for="botFree">Free</label>
-
-                        <input type="radio" id="botPin" name="radioBottom" value="0" checked>
-                        <label for="botPin">Pinned</label>
-
-                        <input type="radio" id="botFixed" name="radioBottom" value="1" >
-                        <label for="botFixed">Fixed</label> 
-                    </div>
-                    
-                    <hr>
-                    <button id="downloadButton" onclick="download()"><img src = "image.png"</button>
+<body>
+    <div id="loader"></div>
+    <div id="title">Rozvany<br>.Square</div>
+    <div id="container">
+        <p id="directions"></p>
+        <div id="controls">
+            <div id="geometry">
+                <p id="edge"> Geometry</p>
+                <div>
+                    <label class="sliderLabel" for="X_Dim">X Size</label>
+                    <input class="slider" type="range" id="X_Dim" name="X_Dim" min="5" max="20" value="12" step="1">
                 </div>
-                <br>
-                
+                <div>
+                    <label class="sliderLabel" for="Y_Dim">Y Size</label>
+                    <input class="slider" type="range" id="Y_Dim" name="Y_Dim" min="5" max="20" value="12" step="1">
+                </div>
+                <div>
+                    <label class="sliderLabel" for="spacing">Spacing</label>
+                    <input class="slider" type="range" id="spacing" name="spacing" min="0.4" max="1.2" value="0.7"
+                        step="0.1">
+                    <br>
+                    <br>
+                    <button id="downloadButton" onclick="download()"><img src="image.png" </button>
+                </div>
             </div>
-            <div id = "geomContainer">
-                <div id="errorMessage"></div>
-            </div>
+            <div id="boundary">
+                <p id="edge">Boundary Conditions</p>
 
+                <div class="radio-toolbar">
+                    <span class="radiolabel">Top</span>
+                    <input type="radio" id="topFree" name="radioTop" value="-1">
+                    <label for="topFree">Free</label>
+
+                    <input type="radio" id="topPin" name="radioTop" value="0" checked>
+                    <label for="topPin">Pinned</label>
+
+                    <input type="radio" id="topFixed" name="radioTop" value="1">
+                    <label for="topFixed">Fixed</label>
+                </div>
+
+                <div class="radio-toolbar">
+                    <span class="radiolabel">Left</span>
+                    <input type="radio" id="leftFree" name="radioLeft" value="-1">
+                    <label for="leftFree">Free</label>
+
+                    <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
+                    <label for="leftPin">Pinned</label>
+
+                    <input type="radio" id="leftFixed" name="radioLeft" value="1">
+                    <label for="leftFixed">Fixed</label>
+                </div>
+
+                <div class="radio-toolbar">
+                    <span class="radiolabel">Right</span>
+                    <input type="radio" id="rightFree" name="radioRight" value="-1">
+                    <label for="rightFree">Free</label>
+
+                    <input type="radio" id="rightPin" name="radioRight" value="0" checked>
+                    <label for="rightPin">Pinned</label>
+
+                    <input type="radio" id="rightFixed" name="radioRight" value="1">
+                    <label for="rightFixed">Fixed</label>
+                </div>
+
+                <div class="radio-toolbar">
+                    <span class="radiolabel">Bottom</span>
+                    <input type="radio" id="botFree" name="radioBottom" value="-1">
+                    <label for="botFree">Free</label>
+
+                    <input type="radio" id="botPin" name="radioBottom" value="0" checked>
+                    <label for="botPin">Pinned</label>
+
+                    <input type="radio" id="botFixed" name="radioBottom" value="1">
+                    <label for="botFixed">Fixed</label>
+                </div>
+            </div>
         </div>
-        <script type="module" src="script01.js"></script>
-    </body>
+        <div id="canvasContainer">
+            <div id="errorMessage"></div>
+            <canvas></canvas>
+        </div>
+    </div>
+    <script type="module" src="script01.js"></script>
+</body>
+
 </html>

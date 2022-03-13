@@ -389,12 +389,10 @@ function init() {
 
   container = document.getElementById('geomContainer');
 
-  var contWidth = container.offsetWidth;
-  var contHeight = container.offsetHeight;
-
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('canvas')
+  });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  container.appendChild(renderer.domElement);
 
 
   // add some controls to orbit the camera

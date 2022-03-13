@@ -53,6 +53,7 @@ data.inputs = {
   'boundaryPoints': [],
   'colPoints': [],
   'lnPoints': [],
+  'splitIndex':[]
 }
 
 //load the rhino3dm library
@@ -69,7 +70,8 @@ rhino3dm().then(async m => {
 //Enables element addition
 function AddBoundary() {
   canvasContainer.addEventListener('click', onClickBound, false);
-  document.getElementById('directions').innerText = "press ENTER to close boundary"
+  document.getElementById('directions').innerText = "press any key to close boundary"
+  document.body.style.cursor = "crosshair"
 }
 
 function Close() {
@@ -90,19 +92,27 @@ function Close() {
     const line = new THREE.Line( geometry, material );
     scene.add(line);
   }
+
+  document.body.style.cursor = "auto"
 }
 
 function AddPoints() {
 
-  //remove event listeners
+    document.body.style.cursor = "crosshair"
+    
+    document.getElementById('directions').innerText = ""
+  
+    //remove event listeners
   canvasContainer.removeEventListener('click', onClickLine, false)
+  canvasContainer.removeEventListener('click', NewLine, false)
   
   //add event listener for column poibnts
   canvasContainer.addEventListener('click', onClickCol, false);
 }
 
 function AddLine() {
-    document.getElementById('directions').innerText = "press ENTER to start new line"
+    document.body.style.cursor = "crosshair"
+    document.getElementById('directions').innerText = "press any key to start new line"
 
   canvasContainer.removeEventListener('click', onClickCol, false)
   //canvasContainer.removeEventListener('click', onClickArc, false)
@@ -112,6 +122,7 @@ function AddLine() {
 }
 
 function Reset(){
+    document.body.style.cursor = "auto"
     document.getElementById('directions').innerText = ""
 
     data.inputs['boundaryPoints'] = []
@@ -139,7 +150,7 @@ var boundVectors = [];
 var lineVectors = [];
 
 function onClickBound(event){
-  // calculate mouse position in normalized device coordinates
+    // calculate mouse position in normalized device coordinates
   // (-1 to +1) for both components
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
@@ -205,11 +216,22 @@ function onClickLine(event){
   //create Three.js Line and material and add to scene
   numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
     console.log(numLinePoints)
-  const points = [];
-  if (numLinePoints > 1){
-    points.push(lineVectors[lineVectors.length-2])
-    points.push(lineVectors[lineVectors.length-1])
-  }
+    const points = [];
+    var splitList = data.inputs['splitIndex'];
+    var splitLength = data.inputs['splitIndex'].length
+    if (splitLength >0){
+        console.log(numLinePoints-splitList[splitLength-1])
+        if (numLinePoints-splitList[splitLength-1] > 1){
+        points.push(lineVectors[lineVectors.length-2])
+        points.push(lineVectors[lineVectors.length-1])
+      }
+    }
+    else {
+        if(numLinePoints > 1){
+        points.push(lineVectors[lineVectors.length-2])
+        points.push(lineVectors[lineVectors.length-1])
+        }
+    }
 
   const circGeometry = new THREE.CircleGeometry( 5, 32 );
   const circle = new THREE.Mesh( circGeometry, material );
@@ -219,10 +241,20 @@ function onClickLine(event){
   const geometry = new THREE.BufferGeometry().setFromPoints( points );
   const line = new THREE.Line( geometry, material );
   scene.add(line);
+
+  window.addEventListener('keyup', NewLine)
+}
+
+function NewLine(){
+    document.body.style.cursor = "crosshair"
+    document.getElementById('directions').innerText = "press any key to start new line"
+    data.inputs['splitIndex'].push(numLinePoints)
+    console.log(data.inputs)
 }
 
 //Call appserver
 async function compute() {
+    document.body.style.cursor = "auto"
   //start spinner
   showSpinner(true);
 
@@ -230,6 +262,7 @@ async function compute() {
   canvasContainer.removeEventListener('click', onClickLine, false)
   canvasContainer.removeEventListener('click', onClickCol, false)
   canvasContainer.removeEventListener('click', onClickBound, false)
+  canvasContainer.removeEventListener('click', NewLine, false)
 
   document.getElementById('directions').innerText = ""
 
