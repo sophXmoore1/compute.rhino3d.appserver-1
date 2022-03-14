@@ -17,11 +17,11 @@ const canvasContainer = document.querySelector('#canvasContainer')
 showSpinner(false);
 
 //starting message
-document.getElementById('directions').innerText = "click on FIXED or FREE BOUNDARY to start drawing"
+document.getElementById('directions').innerText = "Click Draw Boundary to start drawing."
 
 //Define Materials
 const material = new THREE.LineBasicMaterial({
-  color: 0xcfcfcf
+    color: 0xcfcfcf
 });
 
 // set up download button click handlers
@@ -50,78 +50,83 @@ window.addEventListener('keyup', Close)
 let data = {}
 data.definition = definition
 data.inputs = {
-  'boundaryPoints': [],
-  'colPoints': [],
-  'lnPoints': [],
-  'splitIndex':[]
+    'boundaryPoints': [],
+    'colPoints': [],
+    'lnPoints': [],
+    'splitIndex': []
 }
 
 //load the rhino3dm library
 let rhino, doc
 rhino3dm().then(async m => {
-  console.log('Loaded rhino3dm.')
-  rhino = m // global
+    console.log('Loaded rhino3dm.')
+    rhino = m // global
 
-  init()
+    init()
 })
 
 //slider change
 
 //Enables element addition
 function AddBoundary() {
-  canvasContainer.addEventListener('click', onClickBound, false);
-  document.getElementById('directions').innerText = "press any key to close boundary"
-  document.body.style.cursor = "crosshair"
+    if (numBoundPoints == 0){
+        document.getElementById('directions').innerText = "Draw boundary points."
+    }
+    canvasContainer.addEventListener('click', onClickBound, false);
+    document.body.style.cursor = "crosshair"
+    console.log("here")
 }
 
 function Close() {
-  //check that atleast 3 points have been added
-  if(numBoundPoints < 3){
-    document.getElementById('directions').innerText = 'need at least 3 points to close boundary!'
-  }
-  else{
-    //change description message
 
-    document.getElementById('directions').innerText = ""
-    //remove add boundary point event listener
-    canvasContainer.removeEventListener('click', onClickBound, false) 
-    
-    //draw closing boundary line
-    const points = [boundVectors[boundVectors.length-1], boundVectors[0]]
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const line = new THREE.Line( geometry, material );
-    scene.add(line);
-  }
+    //check that atleast 3 points have been added
+    if (numBoundPoints < 3) {
+        return
+    }
+    else {
+        //change description message
 
-  document.body.style.cursor = "auto"
+        document.getElementById('directions').innerText = ""
+        //remove add boundary point event listener
+        canvasContainer.removeEventListener('click', onClickBound, false)
+
+        //draw closing boundary line
+        const points = [boundVectors[boundVectors.length - 1], boundVectors[0]]
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
+        scene.add(line);
+    }
+    document.getElementById('directions').innerText = "Draw Line or Point Supports or Compute."
+    document.body.style.cursor = "auto"
 }
 
 function AddPoints() {
+    document.getElementById('directions').innerText = ''
 
     document.body.style.cursor = "crosshair"
-    
-    document.getElementById('directions').innerText = ""
-  
+
     //remove event listeners
-  canvasContainer.removeEventListener('click', onClickLine, false)
-  canvasContainer.removeEventListener('click', NewLine, false)
-  
-  //add event listener for column poibnts
-  canvasContainer.addEventListener('click', onClickCol, false);
+    canvasContainer.removeEventListener('click', onClickLine, false)
+    canvasContainer.removeEventListener('click', NewLine, false)
+
+    //add event listener for column poibnts
+    canvasContainer.addEventListener('click', onClickCol, false);
 }
 
 function AddLine() {
     document.body.style.cursor = "crosshair"
-    document.getElementById('directions').innerText = "press any key to start new line"
+    if (numLinePoints == 0){
+        document.getElementById('directions').innerText = "Add line support points."
+    }
 
-  canvasContainer.removeEventListener('click', onClickCol, false)
-  //canvasContainer.removeEventListener('click', onClickArc, false)
+    canvasContainer.removeEventListener('click', onClickCol, false)
+    //canvasContainer.removeEventListener('click', onClickArc, false)
 
-  //add event listener for column poibnts
-  canvasContainer.addEventListener('click', onClickLine, false);
+    //add event listener for column poibnts
+    canvasContainer.addEventListener('click', onClickLine, false);
 }
 
-function Reset(){
+function Reset() {
     document.body.style.cursor = "auto"
     document.getElementById('directions').innerText = ""
 
@@ -134,13 +139,13 @@ function Reset(){
     boundVectors = []
     lineVectors = []
 
-    while (scene.children.length>2){
-        for (let i = 0; i<scene.children.length-1; i++){
+    while (scene.children.length > 2) {
+        for (let i = 0; i < scene.children.length - 1; i++) {
             scene.remove(scene.children[2])
             console.log(scene.children)
         }
-     }
-     console.log(numLinePoints)
+    }
+    console.log(numLinePoints)
 }
 
 //Click Events
@@ -149,105 +154,117 @@ var numLinePoints = 0;
 var boundVectors = [];
 var lineVectors = [];
 
-function onClickBound(event){
+function onClickBound(event) {
+
+    document.getElementById('directions').innerText = "Draw boundary points."
+
+    if (numBoundPoints > 1) {
+        document.getElementById('directions').innerText = "Draw boundary points. Press any key to close boundary."
+    }
+
     // calculate mouse position in normalized device coordinates
-  // (-1 to +1) for both components
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
-  mouse.z = 0
-  mouse.unproject(camera)
+    // (-1 to +1) for both components
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1
+    mouse.z = 0
+    mouse.unproject(camera)
 
-  boundVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
+    boundVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
 
-  // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
-  data.inputs['boundaryPoints'].push(pt)
-  
-  //create Three.js Line and material and add to scene
-  numBoundPoints = numBoundPoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
+    // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
+    let pt = "{\"X\":" + mouse.x + ",\"Y\":" + mouse.y + ",\"Z\":0}"
+    data.inputs['boundaryPoints'].push(pt)
 
-  const points = [];
-  if (numBoundPoints > 1){
-    points.push(boundVectors[boundVectors.length-2])
-    points.push(boundVectors[boundVectors.length-1])
-  }
+    //create Three.js Line and material and add to scene
+    numBoundPoints = numBoundPoints + 1; //count number of times a point is clicked so that we know we have at least two points to make a line
 
-  const circGeometry = new THREE.CircleGeometry( 2, 32 );
-  const circle = new THREE.Mesh( circGeometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
+    const points = [];
+    if (numBoundPoints > 1) {
+        points.push(boundVectors[boundVectors.length - 2])
+        points.push(boundVectors[boundVectors.length - 1])
+    }
 
-  const geometry = new THREE.BufferGeometry().setFromPoints( points );
-  const line = new THREE.Line( geometry, material );
-  scene.add(line);
+    const circGeometry = new THREE.CircleGeometry(2, 32);
+    const circle = new THREE.Mesh(circGeometry, material);
+    circle.position.set(mouse.x, mouse.y, mouse.z)
+    scene.add(circle);
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
 }
 
-function onClickCol(event){
-  // calculate mouse position in normalized device coordinates, (-1 to +1) for both components
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
-  mouse.z = 0
-  mouse.unproject(camera)
+function onClickCol(event) {
+    // calculate mouse position in normalized device coordinates, (-1 to +1) for both components
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1
+    mouse.z = 0
+    mouse.unproject(camera)
 
-  // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
-  data.inputs['colPoints'].push(pt)
-  
-  const geometry = new THREE.CircleGeometry( 5, 32 );
-  const circle = new THREE.Mesh( geometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
+    // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
+    let pt = "{\"X\":" + mouse.x + ",\"Y\":" + mouse.y + ",\"Z\":0}"
+    data.inputs['colPoints'].push(pt)
+
+    const geometry = new THREE.CircleGeometry(5, 32);
+    const circle = new THREE.Mesh(geometry, material);
+    circle.position.set(mouse.x, mouse.y, mouse.z)
+    scene.add(circle);
 }
 
-function onClickLine(event){
-  // calculate mouse position in normalized device coordinates
-  // (-1 to +1) for both components
-  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1
-  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1
-  mouse.z = 0
-  mouse.unproject(camera)
+function onClickLine(event) {
 
-  lineVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
+    if (numLinePoints > 0){
+        document.getElementById('directions').innerText = "Press any key to draw a new line."
+    }
 
-  // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
-  let pt = "{\"X\":"+mouse.x+",\"Y\":"+mouse.y+",\"Z\":0}"
-  data.inputs['lnPoints'].push(pt)
-  
-  //create Three.js Line and material and add to scene
-  numLinePoints = numLinePoints+1; //count number of times a point is clicked so that we know we have at least two points to make a line
+    // calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1
+    mouse.z = 0
+    mouse.unproject(camera)
+
+    lineVectors.push(new THREE.Vector3(mouse.x, mouse.y, 0))
+
+    // add json-encoded Point3d to list, e.g. '{ "X": 1.0, "Y": 2.0, "Z": 0.0 }'
+    let pt = "{\"X\":" + mouse.x + ",\"Y\":" + mouse.y + ",\"Z\":0}"
+    data.inputs['lnPoints'].push(pt)
+
+    //create Three.js Line and material and add to scene
+    numLinePoints = numLinePoints + 1; //count number of times a point is clicked so that we know we have at least two points to make a line
     console.log(numLinePoints)
     const points = [];
     var splitList = data.inputs['splitIndex'];
     var splitLength = data.inputs['splitIndex'].length
-    if (splitLength >0){
-        console.log(numLinePoints-splitList[splitLength-1])
-        if (numLinePoints-splitList[splitLength-1] > 1){
-        points.push(lineVectors[lineVectors.length-2])
-        points.push(lineVectors[lineVectors.length-1])
-      }
+    if (splitLength > 0) {
+        console.log(numLinePoints - splitList[splitLength - 1])
+        if (numLinePoints - splitList[splitLength - 1] > 1) {
+            points.push(lineVectors[lineVectors.length - 2])
+            points.push(lineVectors[lineVectors.length - 1])
+        }
     }
     else {
-        if(numLinePoints > 1){
-        points.push(lineVectors[lineVectors.length-2])
-        points.push(lineVectors[lineVectors.length-1])
+        if (numLinePoints > 1) {
+            points.push(lineVectors[lineVectors.length - 2])
+            points.push(lineVectors[lineVectors.length - 1])
         }
     }
 
-  const circGeometry = new THREE.CircleGeometry( 5, 32 );
-  const circle = new THREE.Mesh( circGeometry, material );
-  circle.position.set(mouse.x, mouse.y, mouse.z)
-  scene.add( circle );
+    const circGeometry = new THREE.CircleGeometry(5, 32);
+    const circle = new THREE.Mesh(circGeometry, material);
+    circle.position.set(mouse.x, mouse.y, mouse.z)
+    scene.add(circle);
 
-  const geometry = new THREE.BufferGeometry().setFromPoints( points );
-  const line = new THREE.Line( geometry, material );
-  scene.add(line);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
 
-  window.addEventListener('keyup', NewLine)
+    window.addEventListener('keyup', NewLine)
 }
 
-function NewLine(){
+function NewLine() {
     document.body.style.cursor = "crosshair"
-    document.getElementById('directions').innerText = "press any key to start new line"
+    document.getElementById('directions').innerText = "Draw line support points."
     data.inputs['splitIndex'].push(numLinePoints)
     console.log(data.inputs)
 }
@@ -255,126 +272,126 @@ function NewLine(){
 //Call appserver
 async function compute() {
     document.body.style.cursor = "auto"
-  //start spinner
-  showSpinner(true);
+    //start spinner
+    showSpinner(true);
 
-  //remove event listeners
-  canvasContainer.removeEventListener('click', onClickLine, false)
-  canvasContainer.removeEventListener('click', onClickCol, false)
-  canvasContainer.removeEventListener('click', onClickBound, false)
-  canvasContainer.removeEventListener('click', NewLine, false)
+    //remove event listeners
+    canvasContainer.removeEventListener('click', onClickLine, false)
+    canvasContainer.removeEventListener('click', onClickCol, false)
+    canvasContainer.removeEventListener('click', onClickBound, false)
+    canvasContainer.removeEventListener('click', NewLine, false)
 
-  document.getElementById('directions').innerText = ""
+    document.getElementById('directions').innerText = ""
 
-  let t0 = performance.now()
-  const timeComputeStart = t0
+    let t0 = performance.now()
+    const timeComputeStart = t0
 
-  console.log(data.inputs)
+    console.log(data.inputs)
 
-  const request = {
-    'method': 'POST',
-    'body': JSON.stringify(data),
-    'headers': { 'Content-Type': 'application/json' }
-  }
-
-  try {
-    const response = await fetch('/solve', request)
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
+    const request = {
+        'method': 'POST',
+        'body': JSON.stringify(data),
+        'headers': { 'Content-Type': 'application/json' }
     }
 
-    const responseJson = await response.json()
+    try {
+        const response = await fetch('/solve', request)
 
-    collectResults(responseJson)
+        if (!response.ok) {
+            throw new Error(response.statusText)
+        }
 
-  } catch (error) {
-    console.error(error)
-  }
+        const responseJson = await response.json()
+
+        collectResults(responseJson)
+
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 function decodeItem(item) {
-  const data = JSON.parse(item.data)
-  if (item.type === 'System.String') {
-    // hack for draco meshes
-    try {
-      return rhino.DracoCompression.decompressBase64String(data)
-    } catch { } // ignore errors (maybe the string was just a string...)
-  } else if (typeof data === 'object') {
-    return rhino.CommonObject.decode(data)
-  }
-  return null
+    const data = JSON.parse(item.data)
+    if (item.type === 'System.String') {
+        // hack for draco meshes
+        try {
+            return rhino.DracoCompression.decompressBase64String(data)
+        } catch { } // ignore errors (maybe the string was just a string...)
+    } else if (typeof data === 'object') {
+        return rhino.CommonObject.decode(data)
+    }
+    return null
 }
 
 function collectResults(responseJson) {
 
-  const values = responseJson.values
-  console.log(values) //logs gh outputs
+    const values = responseJson.values
+    console.log(values) //logs gh outputs
 
-  // clear doc
-  try {
-    if (doc !== undefined)
-      doc.delete()
-  } catch { }
+    // clear doc
+    try {
+        if (doc !== undefined)
+            doc.delete()
+    } catch { }
 
-  //console.log(values)
-  doc = new rhino.File3dm()
+    //console.log(values)
+    doc = new rhino.File3dm()
 
-  // for each output (RH_OUT:*)...
-  for (let i = 0; i < values.length; i++) {
-    // ...iterate through data tree structure...
-    for (const path in values[i].InnerTree) {
-      const branch = values[i].InnerTree[path]
-      // ...and for each branch...
-      for (let j = 0; j < branch.length; j++) {
-        // ...load rhino geometry into doc
-        const rhinoObject = decodeItem(branch[j])
-        if (rhinoObject !== null) {
-          // console.log(rhinoObject)
-          doc.objects().add(rhinoObject, null)
+    // for each output (RH_OUT:*)...
+    for (let i = 0; i < values.length; i++) {
+        // ...iterate through data tree structure...
+        for (const path in values[i].InnerTree) {
+            const branch = values[i].InnerTree[path]
+            // ...and for each branch...
+            for (let j = 0; j < branch.length; j++) {
+                // ...load rhino geometry into doc
+                const rhinoObject = decodeItem(branch[j])
+                if (rhinoObject !== null) {
+                    // console.log(rhinoObject)
+                    doc.objects().add(rhinoObject, null)
+                }
+            }
         }
-      }
     }
-  }
 
-  if (doc.objects().count < 1) {
-    console.error('No rhino objects to load!')
-    showSpinner(false)
-    return
-  }
-
-  // go through the objects in the Rhino document
-  let objects = doc.objects();
-  for (let i = 0; i < objects.count; i++) {
-    const rhinoObject = objects.get(i);
-
-    // asign geometry userstrings to object attributes
-    if (rhinoObject.geometry().userStringCount > 0) {
-      const g_userStrings = rhinoObject.geometry().getUserStrings()
-      rhinoObject.attributes().setUserString(g_userStrings[0][0], g_userStrings[0][1])
+    if (doc.objects().count < 1) {
+        console.error('No rhino objects to load!')
+        showSpinner(false)
+        return
     }
-  }
 
-  // load rhino doc into three.js scene
-  const buffer = new Uint8Array(doc.toByteArray()).buffer
-  loader.parse(buffer, function (object) {
+    // go through the objects in the Rhino document
+    let objects = doc.objects();
+    for (let i = 0; i < objects.count; i++) {
+        const rhinoObject = objects.get(i);
 
-    
-    // clear objects from scene
-    scene.traverse(child => {
-      if (child.Line) {
-        scene.remove(child)
-      }
+        // asign geometry userstrings to object attributes
+        if (rhinoObject.geometry().userStringCount > 0) {
+            const g_userStrings = rhinoObject.geometry().getUserStrings()
+            rhinoObject.attributes().setUserString(g_userStrings[0][0], g_userStrings[0][1])
+        }
+    }
+
+    // load rhino doc into three.js scene
+    const buffer = new Uint8Array(doc.toByteArray()).buffer
+    loader.parse(buffer, function (object) {
+
+
+        // clear objects from scene
+        scene.traverse(child => {
+            if (child.Line) {
+                scene.remove(child)
+            }
+        })
+
+        // add object graph from rhino model to three.js scene
+        scene.add(object)
+
+        // hide spinner and enable download button
+        showSpinner(false)
+        //downloadButton.disabled = false
+
     })
-
-    // add object graph from rhino model to three.js scene
-    scene.add(object)
-
-    // hide spinner and enable download button
-    showSpinner(false)
-    //downloadButton.disabled = false
-
-  })
 }
 
 // BOILERPLATE //
@@ -383,68 +400,68 @@ let scene, camera, renderer, controls
 
 function init() {
 
-  // Rhino models are z-up, so set this as the default
-  THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+    // Rhino models are z-up, so set this as the default
+    THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
 
-  // create a scene and a camera
-  scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x3d3e40);
-  const frustumSize = 1000
-  const aspect = window.innerWidth / window.innerHeight;
-  camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1, 1 );
+    // create a scene and a camera
+    scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x3d3e40);
+    const frustumSize = 1000
+    const aspect = window.innerWidth / window.innerHeight;
+    camera = new THREE.OrthographicCamera(frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1, 1);
 
 
-  // create the renderer and add it to the html
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    canvas: document.querySelector('canvas') //adds renderer to HTML canvas element
-  });
-  renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  //document.body.appendChild(renderer.domElement);
+    // create the renderer and add it to the html
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        canvas: document.querySelector('canvas') //adds renderer to HTML canvas element
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    //document.body.appendChild(renderer.domElement);
 
-  // add some controls to orbit the camera
-  controls = new OrbitControls(camera, renderer.domElement)
+    // add some controls to orbit the camera
+    controls = new OrbitControls(camera, renderer.domElement)
 
-  // add a directional light
-  const directionalLight = new THREE.DirectionalLight(0xffffff)
-  directionalLight.intensity = 2
-  scene.add(directionalLight)
+    // add a directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff)
+    directionalLight.intensity = 2
+    scene.add(directionalLight)
 
-  const ambientLight = new THREE.AmbientLight()
-  scene.add(ambientLight)
+    const ambientLight = new THREE.AmbientLight()
+    scene.add(ambientLight)
 
-  window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('resize', onWindowResize, false);
 
-  animate()
+    animate()
 }
 
 function animate() {
-  requestAnimationFrame(animate)
-  renderer.render(scene, camera)
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera)
 }
 
 // download button handler
 function download() {
-  let buffer = doc.toByteArray()
-  let blob = new Blob([buffer], { type: "application/octect-stream" })
-  let link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
-  link.download = 'RozvanyDrawLayout.3dm'
-  link.click()
+    let buffer = doc.toByteArray()
+    let blob = new Blob([buffer], { type: "application/octect-stream" })
+    let link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = 'RozvanyDrawLayout.3dm'
+    link.click()
 }
 
 function onWindowResize() {
 
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
 
 function showSpinner(enable) {
-  if (enable)
-    document.getElementById('loader').style.display = 'block'
-  else
-    document.getElementById('loader').style.display = 'none'
+    if (enable)
+        document.getElementById('loader').style.display = 'block'
+    else
+        document.getElementById('loader').style.display = 'none'
 }

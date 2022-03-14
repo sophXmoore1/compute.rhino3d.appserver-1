@@ -13,7 +13,7 @@ loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 const definition = 'RozvanyCompute.gh'
 
 // set up download button click handlers
-const downloadButton = document.getElementById("downloadButton")
+const downloadButton = document.getElementById("download")
 downloadButton.onclick = download
 
 //initialize fixity values
@@ -57,6 +57,45 @@ const materialGray = new THREE.LineBasicMaterial({
   linewidth: lineWidth,
 });
 
+////Button Appearance Features////////
+
+const geometryButton = document.getElementById('geometry');
+geometryButton.addEventListener('mouseup', geomContent, false)
+const boundaryButton = document.getElementById('boundary');
+boundaryButton.addEventListener('mouseup', boundContent, false)
+var geometryClicked = 0;
+var boundaryClicked = 0;
+var downloadClicked = 0;
+
+function geomContent(e){
+  var $content = e.target.nextElementSibling.style;
+  if (geometryClicked == 0){
+    $content.display = "block"
+    geometryClicked = 1
+    return
+  }
+  if(geometryClicked == 1){
+    $content.display = "none"
+    geometryClicked = 0
+    return
+  }
+}
+
+function boundContent(e){
+  var $content = e.target.nextElementSibling.style;
+  if (boundaryClicked == 0){
+    $content.display = "block"
+    boundaryClicked = 1;
+    return
+  }
+  if(boundaryClicked == 1){
+    $content.display = "none"
+    boundaryClicked = 0
+    return
+  }
+}
+
+///////////////////////////
 
 // Set up sliders and event listeners
 const xdim_slider = document.getElementById('X_Dim')
@@ -150,7 +189,7 @@ function radioClick() {
   const fixitySum = Number(bottomVal) + Number(topVal) + Number(rightVal) + Number(leftVal);
   console.log(fixitySum);
   if (fixitySum < -2) {
-    document.getElementById('errorMessage').textContent = 'UNSTABLE!';
+    document.getElementById('errorMessage').textContent = 'UNSTABLE';
     return;
   }
 
@@ -229,8 +268,6 @@ function collectResults(responseJson) {
 
   const values = responseJson.values
 
-  console.log(values)
-
   // clear doc
   try {
     if (doc !== undefined)
@@ -291,10 +328,8 @@ function collectResults(responseJson) {
     // color crvs
     object.traverse(child => {
       if (child.isLine) {
-        console.log(child)
         if (child.userData.attributes.geometry.userStringCount > 0) {
           const name = child.userData.attributes.userStrings[0][1];
-          console.log(name);
           if (name == "positive") { child.material = materialLightGray; }
           if (name == "negative") { child.material = materialLightGray; }
           if (name == "junction") { child.material = materialPink; }
@@ -319,56 +354,6 @@ function collectResults(responseJson) {
   })
 }
 
-/*
-  // load rhino doc into three.js scene
-  const buffer = new Uint8Array(doc.toByteArray()).buffer
-  loader.parse(buffer, function (object) {
-
-    // clear objects from scene
-    scene.traverse(child => {
-      if (!child.isLight) {
-          scene.remove(child)
-      }
-  })
-  
-    /*
-    object.traverse(child => {
-      if (child.isLine) {
-        console.log(child)
-        if (child.userData.attributes.geometry.userStringCount > 0) {
-          const name = child.userData.attributes.geometry.userStrings[0][1];
-          console.log(name);
-          if (name == "positive") { child.material = materialLightGray; }
-          if (name == "negative") { child.material = materialLightGray; }
-          if (name == "junction") { child.material = materialPink; }
-          if (name == "edge") { child.material = materialOrange; }
-          if (name == "internal") { child.material = materialYellow; }
-          if (name == "free") { child.material = materialGreen; }
-          if (name == "pinned") { child.material = materialTeal; }
-          if (name == "fixed") { child.material = materialBlue; }
-
-        }
-      }
-    })
-  
-          // color crvs
-          object.traverse(child => {
-            if (child.isLine) {
-              if (child.userData.attributes.geometry.userStringCount > 0) {
-                //console.log(child.userData.attributes.geometry.userStrings[0][1])
-                const col = child.userData.attributes.geometry.userStrings[0][1]
-                const threeColor = new THREE.Color( "rgb(" + col + ")")
-                const mat = new THREE.LineBasicMaterial({color:threeColor})
-                child.material = mat
-              }
-            }
-          })
-          
-    scene.add(object)
-    // hide spinner
-    document.getElementById('loader').style.display = 'none'
-
-  })*/
 
 // BOILERPLATE //
 
@@ -416,6 +401,7 @@ function animate() {
 
 // download button handler
 function download() {
+  downloadClicked = 1;
   let buffer = doc.toByteArray()
   let blob = new Blob([buffer], { type: "application/octect-stream" })
   let link = document.createElement('a')
