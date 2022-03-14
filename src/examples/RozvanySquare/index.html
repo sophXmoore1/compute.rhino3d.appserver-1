@@ -94,8 +94,8 @@
 
         .geomContent {
             position: absolute;
-            top: -112px;
-            left: -150px;
+            transform: translate(-80%, -100%);
+            top: -10px;
             display: none;
             color: white;
             background-color: rgba(222, 222, 222, 0.5);
@@ -107,8 +107,8 @@
         }
         .boundContent {
             position: absolute;
-            top: -155px;
-            left: 2px;
+            transform: translate(0, -100%);
+            top: -10px;
             display: none;
             color: white;
             background-color: rgba(222, 222, 222, 0.5);
@@ -142,6 +142,7 @@
 
         .radio-toolbar {
             margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         /*hide circular radio buttons*/
@@ -152,16 +153,21 @@
         }
 
         .radio-toolbar label {
+            vertical-align: middle;
             background-color: #ddd;
             color: black;
             font-family: sans-serif, Arial;
-            border-radius: 20px;
-            margin: 10px;
-            width: 40px;
-            height: 40px;
+            border-radius: 40px;
+            margin-left: 5px;
+            margin-right: 5px;
+            width: 30px;
+            height: 26px;
             border: 0px;
-            font-size: 14px;
-            padding: 5px;
+            font-size: 20px;
+            padding-top: 0px;
+            text-align: center;
+            display: inline-block;
+            padding-top: 4px;
         }
 
         .radio-toolbar label:hover {
@@ -172,31 +178,33 @@
         .radio-toolbar input[type="radio"],
         input[value="-1"]:checked+label {
             background-color: rgb(11, 194, 5);
-            color: black;
-            border: 1px solid white;
+            color: white;
+            border: 0px solid white;
         }
 
         .radio-toolbar input[type="radio"],
         input[value="0"]:checked+label {
             background-color: cyan;
             color: black;
-            border: 1px solid white;
+            border: 0px solid white;
         }
 
         .radio-toolbar input[type="radio"],
         input[value="1"]:checked+label {
             background-color: blue;
             color: white;
-            border: 1px solid white;
+            border: 0px solid white;
         }
 
         .radiolabel {
-            font-size: 14px;
+            font-size: 20px;
             display: inline-block;
-            text-align: left;
-            width: 60px;
-            font-weight: bold;
+            text-align: center;
+            width: 20px;
+            font-weight: none;
             color: white;
+            margin-left: 10px;
+            margin-right: 20px;
         }
 
         .slider {
@@ -312,9 +320,9 @@
                 <button id="boundary">⯐</button>
                 <div class="boundContent">
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Top</span>
+                        <span class="radiolabel">⬒</span>
                         <input type="radio" id="topFree" name="radioTop" value="-1">
-                        <label for="topFree">◯</label>
+                        <label for="topFree">◎</label>
 
                         <input type="radio" id="topPin" name="radioTop" value="0" checked>
                         <label for="topPin">△</label>
@@ -324,9 +332,9 @@
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Left</span>
+                        <span class="radiolabel">◧</span>
                         <input type="radio" id="leftFree" name="radioLeft" value="-1">
-                        <label for="leftFree">◯</label>
+                        <label for="leftFree">◎</label>
 
                         <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
                         <label for="leftPin">△</label>
@@ -336,9 +344,9 @@
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Right</span>
+                        <span class="radiolabel">◨</span>
                         <input type="radio" id="rightFree" name="radioRight" value="-1">
-                        <label for="rightFree">◯</label>
+                        <label for="rightFree">◎</label>
 
                         <input type="radio" id="rightPin" name="radioRight" value="0" checked>
                         <label for="rightPin">△</label>
@@ -348,9 +356,9 @@
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Bottom</span>
+                        <span class="radiolabel">⬓</span>
                         <input type="radio" id="botFree" name="radioBottom" value="-1">
-                        <label for="botFree">◯</label>
+                        <label for="botFree">◎</label>
 
                         <input type="radio" id="botPin" name="radioBottom" value="0" checked>
                         <label for="botPin">△</label>
