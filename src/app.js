@@ -40,7 +40,7 @@ app.get('/favicon.ico', (req, res) => res.status(200))
 app.use('/definition', require('./routes/definition'))
 app.use('/solve', require('./routes/solve'))
 app.use('/view', require('./routes/template'))
-app.use('/', require('./routes/index'))
+app.use('/', express.static(__dirname + '/Rozvany'))
 
 // ref: https://github.com/expressjs/express/issues/3589
 // remove line when express@^4.17
