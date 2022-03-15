@@ -17,7 +17,6 @@ const canvasContainer = document.querySelector('#canvasContainer')
 showSpinner(false);
 
 //starting message
-document.getElementById('directions').innerText = "Click Draw Boundary to start drawing."
 
 //Define Materials
 const material = new THREE.LineBasicMaterial({
@@ -46,6 +45,13 @@ reset.addEventListener('click', Reset)
 
 window.addEventListener('keyup', Close)
 
+//starting disabled buttons
+addPoints.disabled = true;
+addLine.disabled = true;
+computeButton.disabled = true;
+reset.disabled = true;
+downloadButton.disabled = true;
+
 //Intialize data objects
 let data = {}
 data.definition = definition
@@ -70,7 +76,7 @@ rhino3dm().then(async m => {
 //Enables element addition
 function AddBoundary() {
     if (numBoundPoints == 0){
-        document.getElementById('directions').innerText = "Draw boundary points."
+        document.getElementById('directions').innerText = ""
     }
     canvasContainer.addEventListener('click', onClickBound, false);
     document.body.style.cursor = "crosshair"
@@ -96,8 +102,15 @@ function Close() {
         const line = new THREE.Line(geometry, material);
         scene.add(line);
     }
-    document.getElementById('directions').innerText = "Draw Line or Point Supports or Compute."
+    document.getElementById('directions').innerText = ""
     document.body.style.cursor = "auto"
+
+    //enable buttons
+    addBoundary.disabled = true;
+    addPoints.disabled = false;
+    addLine.disabled = false;
+    reset.disabled = false;
+    computeButton.disabled = false;
 }
 
 function AddPoints() {
@@ -116,7 +129,7 @@ function AddPoints() {
 function AddLine() {
     document.body.style.cursor = "crosshair"
     if (numLinePoints == 0){
-        document.getElementById('directions').innerText = "Add line support points."
+        document.getElementById('directions').innerText = ""
     }
 
     canvasContainer.removeEventListener('click', onClickCol, false)
@@ -127,6 +140,8 @@ function AddLine() {
 }
 
 function Reset() {
+    addBoundary.disabled = false;
+
     document.body.style.cursor = "auto"
     document.getElementById('directions').innerText = ""
 
@@ -142,10 +157,8 @@ function Reset() {
     while (scene.children.length > 2) {
         for (let i = 0; i < scene.children.length - 1; i++) {
             scene.remove(scene.children[2])
-            console.log(scene.children)
         }
     }
-    console.log(numLinePoints)
 }
 
 //Click Events
@@ -156,10 +169,10 @@ var lineVectors = [];
 
 function onClickBound(event) {
 
-    document.getElementById('directions').innerText = "Draw boundary points."
+    document.getElementById('directions').innerText = ""
 
     if (numBoundPoints > 1) {
-        document.getElementById('directions').innerText = "Draw boundary points. Press any key to close boundary."
+        document.getElementById('directions').innerText = "Press any key to close boundary."
     }
 
     // calculate mouse position in normalized device coordinates
@@ -264,13 +277,18 @@ function onClickLine(event) {
 
 function NewLine() {
     document.body.style.cursor = "crosshair"
-    document.getElementById('directions').innerText = "Draw line support points."
+    document.getElementById('directions').innerText = ""
     data.inputs['splitIndex'].push(numLinePoints)
     console.log(data.inputs)
 }
 
 //Call appserver
 async function compute() {
+    addLine.disabled = true;
+    addPoints.disabled = true;
+    downloadButton.disabled = false;
+    computeButton.disabled = true;
+
     document.body.style.cursor = "auto"
     //start spinner
     showSpinner(true);
@@ -436,6 +454,8 @@ function init() {
     animate()
 }
 
+
+
 function animate() {
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
@@ -452,11 +472,9 @@ function download() {
 }
 
 function onWindowResize() {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
 
 function showSpinner(enable) {

@@ -10,7 +10,7 @@ const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 //Define grasshopper script
-const definition = 'RozvanyCompute.gh'
+const definition = 'RozvanyGrid.gh'
 
 // set up download button click handlers
 const downloadButton = document.getElementById("download")
@@ -86,6 +86,15 @@ const spacing_slider = document.getElementById('spacing')
 spacing_slider.addEventListener('mouseup', onSliderChange, false)
 spacing_slider.addEventListener('touchend', onSliderChange, false)
 
+const triangle = document.getElementById("triangle")
+triangle.addEventListener('click', AssignType)
+
+const square = document.getElementById("square")
+square.addEventListener('click', AssignType)
+
+const hexagon = document.getElementById("hexagon")
+hexagon.addEventListener('click', AssignType)
+
 //load the rhino3dm library
 let rhino, doc
 rhino3dm().then(async m => {
@@ -102,6 +111,21 @@ function onSliderChange() {
   document.getElementById('loader').style.display = 'block'
   compute()
 }
+var type = 0;
+
+function AssignType(e)
+{
+  if (e.target.id == "square"){
+    type = 0;
+  }
+  if (e.target.id == "triangle"){
+    type = 1;
+  }
+  if (e.target.id == "hexagon"){
+    type = 2;
+  }
+  compute()
+}
 
 //Call appserver
 async function compute() {
@@ -113,11 +137,12 @@ async function compute() {
   let data = {}
   data.definition = definition
   data.inputs = {
-    'xDim': xdim_slider.valueAsNumber,
-    'yDim': ydim_slider.valueAsNumber,
+    'Ex': xdim_slider.valueAsNumber,
+    'Ey': ydim_slider.valueAsNumber,
     'spacing': spacing_slider.valueAsNumber,
+    'type': parseInt(type)
   }
-
+console.log(typeof xdim_slider.valueAsNumber)
   console.log(data.inputs)
 
   const request = {

@@ -75,8 +75,10 @@ async function readSingleFile(e) {
     }
     if (geom instanceof rhino.Point){
       //data.inputs['points'].push(JSON.stringify(geom))
-      let pt = '{\"X\":'+geom.location[0]+', \"Y\":'+geom.location[1]+', \"Z\": '+geom.location[2]+'}'
-      data.inputs['points'].push(pt)
+      let pt01 = '{\"X\":'+geom.pointAtStart[0]+', \"Y\":'+geom.pointAtStart[1]+', \"Z\": '+geom.pointAtStart[2]+'}'
+      data.inputs['points'].push(pt01)
+      let pt02 = '{\"X\":'+geom.pointAtEnd[0]+', \"Y\":'+geom.pointAtEnd[1]+', \"Z\": '+geom.pointAtEnd[2]+'}'
+      data.inputs['points'].push(pt02)
       elementAddCount++
     }
     if (geom instanceof rhino.PolylineCurve){
