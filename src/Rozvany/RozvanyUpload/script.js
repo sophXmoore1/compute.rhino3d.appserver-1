@@ -10,81 +10,29 @@ const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 //Define grasshopper script
-const definition = 'RozvanyCompute.gh'
+const definition = 'RozvanyUpload.gh'
 
-// set up download button click handlers
+//initialize data objects to be used by compute
+let data = {}
+data.definition = definition
+data.inputs = {
+  boundary: [],
+  points: [],
+  lines: []
+}
+
+//1. upload rhino file
+//2. check if file has been uploaded
+//3. extract elements
+//4. rhino compute
+
+// set up listener events
 const downloadButton = document.getElementById("download")
 downloadButton.onclick = download
 
-//Materials
-var lineWidth = 1;
-const materialGreen = new THREE.LineBasicMaterial({
-  color: 0x2c205,
-  linewidth: lineWidth,
-});
-const materialPink = new THREE.LineBasicMaterial({
-  color: 0xeb34db,
-  linewidth: lineWidth,
-});
-const materialOrange = new THREE.LineBasicMaterial({
-  color: 0xeb9834,
-  linewidth: lineWidth,
-});
-const materialYellow = new THREE.LineBasicMaterial({
-  color: 0xf0e91a,
-  linewidth: lineWidth,
-});
-const materialBlue = new THREE.LineBasicMaterial({
-  color: 0x0915b5,
-  linewidth: lineWidth,
-});
-const materialTeal = new THREE.LineBasicMaterial({
-  color: 0x16dbd8,
-  linewidth: lineWidth,
-});
-const materialLightGray = new THREE.LineBasicMaterial({
-  color: 0xcfcfcf,
-  linewidth: lineWidth,
-});
-const materialGray = new THREE.LineBasicMaterial({
-  color: 0x333333,
-  linewidth: lineWidth,
-});
-
-////Button Appearance Features////////
-
-const geometryButton = document.getElementById('geometry');
-geometryButton.addEventListener('mouseup', geomContent, false)
-var geometryClicked = 0;
-
-function geomContent(e){
-  var $content = e.target.nextElementSibling.style;
-  if (geometryClicked == 0){
-    $content.display = "block"
-    geometryClicked = 1
-    return
-  }
-  if(geometryClicked == 1){
-    $content.display = "none"
-    geometryClicked = 0
-    return
-  }
-}
-
-///////////////////////////
-
-// Set up sliders and event listeners
-const xdim_slider = document.getElementById('X_Dim')
-xdim_slider.addEventListener('mouseup', onSliderChange, false)
-xdim_slider.addEventListener('touchend', onSliderChange, false)
-
-const ydim_slider = document.getElementById('Y_Dim')
-ydim_slider.addEventListener('mouseup', onSliderChange, false)
-ydim_slider.addEventListener('touchend', onSliderChange, false)
-
-const spacing_slider = document.getElementById('spacing')
-spacing_slider.addEventListener('mouseup', onSliderChange, false)
-spacing_slider.addEventListener('touchend', onSliderChange, false)
+// register event listener for file input
+document.getElementById('upload')
+  .addEventListener('change', readSingleFile, false);
 
 //load the rhino3dm library
 let rhino, doc
@@ -93,32 +41,72 @@ rhino3dm().then(async m => {
   rhino = m // global
 
   init()
-  compute()
+  //compute()
 })
 
-//slider change
-function onSliderChange() {
-  // show spinner
-  document.getElementById('loader').style.display = 'block'
+async function readSingleFile(e) {
+  // get file
+  var file = e.target.files[0]
+  if (!file) {
+    document.getElementById('errorMessage').innerText = 'Something went wrong...'
+    return
+  }
+
+  // try to open 3dm file
+  const buffer = await file.arrayBuffer()
+  const uploadDoc = rhino.File3dm.fromByteArray(new Uint8Array(buffer))
+
+  if (uploadDoc === null) {
+    document.getElementById('msg').innerText = 'Must be a .3dm file!'
+    return
+  }
+
+  var elementAddCount = 0
+  // get geometry from file
+  const objs = uploadDoc.objects()
+  console.log(objs.count)
+  for (let i = 0; i < objs.count; i++) {
+    const geom = objs.get(i).geometry()
+    console.log(geom)
+    // filter for geometry of a specific type
+    if (geom instanceof rhino.LineCurve) {
+      data.inputs['lines'].push(JSON.stringify(geom.encode()))
+      elementAddCount++
+    }
+    if (geom instanceof rhino.Point){
+      //data.inputs['points'].push(JSON.stringify(geom))
+      let pt = '{\"X\":'+geom.location[0]+', \"Y\":'+geom.location[1]+', \"Z\": '+geom.location[2]+'}'
+      data.inputs['points'].push(pt)
+      elementAddCount++
+    }
+    if (geom instanceof rhino.PolylineCurve){
+      data.inputs['boundary'].push(JSON.stringify(geom.encode()))
+      elementAddCount++
+    }
+  }
+  console.log(data.inputs['lines'])
+  console.log(data.inputs)
+
+  //test if rhino elements were added
+  if (elementAddCount != objs.count){
+    console.log("not all rhino elements were read")
+    console.log(elementAddCount)
+  }
+  else {
+    console.log('all elements read')
+  }
+
+  console.log(data.inputs)
+  // solve!
   compute()
 }
+
 
 //Call appserver
 async function compute() {
 
   let t0 = performance.now()
   const timeComputeStart = t0
-
-  //collect data from inputs
-  let data = {}
-  data.definition = definition
-  data.inputs = {
-    'xDim': xdim_slider.valueAsNumber,
-    'yDim': ydim_slider.valueAsNumber,
-    'spacing': spacing_slider.valueAsNumber,
-  }
-
-  console.log(data.inputs)
 
   const request = {
     'method': 'POST',
@@ -216,27 +204,6 @@ function collectResults(responseJson) {
       }
     })
 
-    ///////////////////////////////////////////////////////////////////////
-
-    // color crvs
-    object.traverse(child => {
-      if (child.isLine) {
-        if (child.userData.attributes.geometry.userStringCount > 0) {
-          const name = child.userData.attributes.userStrings[0][1];
-          if (name == "positive") { child.material = materialLightGray; }
-          if (name == "negative") { child.material = materialLightGray; }
-          if (name == "junction") { child.material = materialPink; }
-          if (name == "edge") { child.material = materialOrange; }
-          if (name == "internal") { child.material = materialYellow; }
-          if (name == "free") { child.material = materialGreen; }
-          if (name == "pinned") { child.material = materialTeal; }
-          if (name == "fixed") { child.material = materialBlue; }
-
-        }
-      }
-    })
-
-    ///////////////////////////////////////////////////////////////////////
     // add object graph from rhino model to three.js scene
     scene.add(object)
 
@@ -311,12 +278,6 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-}
-
-function meshToThreejs(mesh, material) {
-  const loader = new THREE.BufferGeometryLoader()
-  const geometry = loader.parse(mesh.toThreejsJSON())
-  return new THREE.Mesh(geometry, material)
 }
 
 function showSpinner(enable) {

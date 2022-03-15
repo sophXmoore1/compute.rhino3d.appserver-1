@@ -35,10 +35,45 @@
                 font-family: Arial, Helvetica, sans-serif;
                 font-weight: bold;
             }
+            #top{
+                position: absolute;
+                bottom: 75px;
+                left: 0;
+                animation: linear infinite;
+                animation-name: talk;
+                animation-duration: 0.5s;
+                animation-play-state: paused;
+            }
+            #bottom{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+            img{
+                width:150px;
+                height:auto;
+            }
+
+            #top:hover{
+                animation-play-state: running;
+            }
+
+            @keyframes talk{
+                0%{
+                    bottom: 80px;
+                    left: 0;
+                }
+                50%{
+                    bottom: 100px;
+                    transform: rotate(-10deg)
+                }
+                100%{
+                    bottom: 80px;
+                }
+            }
         </style>
     </head>
     <body>
-        <div id="loader"></div> 
         <div id="container">
             <div id = "title">Rozvany</div>
             <div id = "title" style = "color: rgb(147, 101, 255);"><br>.Home</div>
@@ -51,6 +86,12 @@
                     <br>
                     <a href="./RozvanyUpload/">Upload</a>
                 </div>
+        </div>
+        <div id = top>
+            <img src="images/PragerTop.png" alt="top">
+        </div>
+        <div id = bottom>
+            <img src="images/PragerBottom.png" alt="top">
         </div>
     </body>
 </html>
