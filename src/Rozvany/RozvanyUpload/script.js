@@ -21,11 +21,6 @@ data.inputs = {
   lines: []
 }
 
-//1. upload rhino file
-//2. check if file has been uploaded
-//3. extract elements
-//4. rhino compute
-
 // set up listener events
 const downloadButton = document.getElementById("download")
 downloadButton.onclick = download
@@ -59,7 +54,7 @@ async function readSingleFile(e) {
   if (uploadDoc === null) {
     document.getElementById('msg').innerText = 'Must be a .3dm file!'
     return
-  }
+  }  
 
   var elementAddCount = 0
   // get geometry from file
@@ -67,25 +62,31 @@ async function readSingleFile(e) {
   console.log(objs.count)
   for (let i = 0; i < objs.count; i++) {
     const geom = objs.get(i).geometry()
-    console.log(geom)
+    console.log(objs.get(i).layers())
     // filter for geometry of a specific type
     if (geom instanceof rhino.LineCurve) {
       data.inputs['lines'].push(JSON.stringify(geom.encode()))
       elementAddCount++
     }
     if (geom instanceof rhino.Point){
-      //data.inputs['points'].push(JSON.stringify(geom))
+      data.inputs['points'].push(JSON.stringify(geom))
+      /*
       let pt01 = '{\"X\":'+geom.pointAtStart[0]+', \"Y\":'+geom.pointAtStart[1]+', \"Z\": '+geom.pointAtStart[2]+'}'
       data.inputs['points'].push(pt01)
       let pt02 = '{\"X\":'+geom.pointAtEnd[0]+', \"Y\":'+geom.pointAtEnd[1]+', \"Z\": '+geom.pointAtEnd[2]+'}'
       data.inputs['points'].push(pt02)
       elementAddCount++
+      */
     }
     if (geom instanceof rhino.PolylineCurve){
       data.inputs['boundary'].push(JSON.stringify(geom.encode()))
       elementAddCount++
     }
-  }
+    if (geom instanceof rhino.Brep){
+      data.inputs['boundary'].push(JSON.stringify(geom.encode()))
+      elementAddCount++
+    }
+  } 
   console.log(data.inputs['lines'])
   console.log(data.inputs)
 

@@ -141,8 +141,8 @@
         }
 
         .radio-toolbar {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
 
         /*hide circular radio buttons*/
@@ -157,17 +157,16 @@
             background-color: #ddd;
             color: black;
             font-family: sans-serif, Arial;
-            border-radius: 40px;
-            margin-left: 5px;
-            margin-right: 5px;
-            width: 30px;
-            height: 26px;
+            border-radius: 5px;
+            margin-left: 1px;
+            margin-right: 1px;
+            height: 8px;
             border: 0px;
-            font-size: 20px;
-            padding-top: 0px;
+            font-size: 8px;
+            padding: 5px;
             text-align: center;
             display: inline-block;
-            padding-top: 4px;
+            
         }
 
         .radio-toolbar label:hover {
@@ -197,7 +196,7 @@
         }
 
         .radiolabel {
-            font-size: 20px;
+            font-size: 12px;
             display: inline-block;
             text-align: center;
             width: 20px;
@@ -205,14 +204,15 @@
             color: white;
             margin-left: 10px;
             margin-right: 20px;
+            font-weight: bold;
         }
 
         .slider {
             -webkit-appearance: none;
             width: 120px;
-            height: 8px;
+            height: 7px;
             border-radius: 5px;
-            margin: 10px;
+            margin: 5px;
         }
 
         .slider::-webkit-slider-thumb {
@@ -284,6 +284,30 @@
             vertical-align: middle;
             font-weight: bold;
         }
+        .info{
+            background-color: rgba(222, 222, 222, 0.5);
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            font-size: 12px;
+            font-weight: none;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #info{
+            color: rgb(253,253,150);
+            width: 100px;
+        }
+
+        #info:hover + .info{
+            display: block;
+        }
+
+        #info:hover{
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -292,7 +316,18 @@
     <div id = "title">
         <a href= "../" style = "color:white; text-decoration: none">Rozvany</a>
         <br>
-        <div style="color:rgb(244,154,194)">.Square</div>
+        <div id = info style="color:rgb(244,154,194)">.Square</div>
+        <div class = "info">
+            Optimal Structural Layout Genenerator
+            <br>
+            based on column location
+            <br>
+            yellow: negative curvature
+            <br>
+            blue: positive curvature
+            <br>
+            pink: curvature
+        </div>
     </div>
     <div id="container">
         <p id="directions"></p>
@@ -323,51 +358,51 @@
                 <button id="boundary">⯐</button>
                 <div class="boundContent">
                     <div class="radio-toolbar">
-                        <span class="radiolabel">⬒</span>
+                        <span class="radiolabel">Top:</span>
                         <input type="radio" id="topFree" name="radioTop" value="-1">
-                        <label for="topFree">◎</label>
+                        <label for="topFree">Free</label>
 
                         <input type="radio" id="topPin" name="radioTop" value="0" checked>
-                        <label for="topPin">△</label>
+                        <label for="topPin">Pinned</label>
 
                         <input type="radio" id="topFixed" name="radioTop" value="1">
-                        <label for="topFixed">◻</label>
+                        <label for="topFixed">Fixed</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">◧</span>
+                        <span class="radiolabel">Left:</span>
                         <input type="radio" id="leftFree" name="radioLeft" value="-1">
-                        <label for="leftFree">◎</label>
+                        <label for="leftFree">Free</label>
 
                         <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
-                        <label for="leftPin">△</label>
+                        <label for="leftPin">Pinned</label>
 
                         <input type="radio" id="leftFixed" name="radioLeft" value="1">
-                        <label for="leftFixed">◻</label>
+                        <label for="leftFixed">Fixed</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">◨</span>
+                        <span class="radiolabel">Right:</span>
                         <input type="radio" id="rightFree" name="radioRight" value="-1">
-                        <label for="rightFree">◎</label>
+                        <label for="rightFree">Free</label>
 
                         <input type="radio" id="rightPin" name="radioRight" value="0" checked>
-                        <label for="rightPin">△</label>
+                        <label for="rightPin">Pinned</label>
 
                         <input type="radio" id="rightFixed" name="radioRight" value="1">
-                        <label for="rightFixed">◻</label>
+                        <label for="rightFixed">Fixed</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">⬓</span>
+                        <span class="radiolabel">Bot:</span>
                         <input type="radio" id="botFree" name="radioBottom" value="-1">
-                        <label for="botFree">◎</label>
+                        <label for="botFree">Free</label>
 
                         <input type="radio" id="botPin" name="radioBottom" value="0" checked>
-                        <label for="botPin">△</label>
+                        <label for="botPin">Pinned</label>
 
                         <input type="radio" id="botFixed" name="radioBottom" value="1">
-                        <label for="botFixed">◻</label>
+                        <label for="botFixed">Fixed</label>
                     </div>
                 </div>
             </div>

@@ -58,7 +58,7 @@ geometryButton.addEventListener('mouseup', geomContent, false)
 var geometryClicked = 0;
 
 function geomContent(e){
-  var $content = e.target.nextElementSibling.style;
+  var $content = e.target.nextElementSibling.nextElementSibling.style;
   if (geometryClicked == 0){
     $content.display = "block"
     geometryClicked = 1
@@ -111,7 +111,7 @@ function onSliderChange() {
   document.getElementById('loader').style.display = 'block'
   compute()
 }
-var type = 0;
+var type = 1;
 
 function AssignType(e)
 {
@@ -242,27 +242,15 @@ function collectResults(responseJson) {
     })
 
     ///////////////////////////////////////////////////////////////////////
-
+    /*
     // color crvs
     object.traverse(child => {
-      if (child.isLine) {
-        if (child.userData.attributes.geometry.userStringCount > 0) {
-          const name = child.userData.attributes.userStrings[0][1];
-          if (name == "positive") { child.material = materialLightGray; }
-          if (name == "negative") { child.material = materialLightGray; }
-          if (name == "junction") { child.material = materialPink; }
-          if (name == "edge") { child.material = materialOrange; }
-          if (name == "internal") { child.material = materialYellow; }
-          if (name == "free") { child.material = materialGreen; }
-          if (name == "pinned") { child.material = materialTeal; }
-          if (name == "fixed") { child.material = materialBlue; }
-
-        }
-      }
+      scene.add(child)
     })
-
+    */
     ///////////////////////////////////////////////////////////////////////
     // add object graph from rhino model to three.js scene
+    console.log(scene)
     scene.add(object)
 
     // hide spinner and enable download button
@@ -280,7 +268,7 @@ let scene, camera, renderer, controls, container;
 function init() {
 
   // Rhino models are z-up, so set this as the default
-  //THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+  THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
 
   // create a scene and a camera
   scene = new THREE.Scene()
@@ -299,7 +287,7 @@ function init() {
 
 
   // add some controls to orbit the camera
-  //controls = new OrbitControls(camera, renderer.domElement)
+  controls = new OrbitControls(camera, renderer.domElement)
 
   // add a directional light
   const directionalLight = new THREE.DirectionalLight(0xffffff)
@@ -319,7 +307,6 @@ function animate() {
 
 // download button handler
 function download() {
-  downloadClicked = 1;
   let buffer = doc.toByteArray()
   let blob = new Blob([buffer], { type: "application/octect-stream" })
   let link = document.createElement('a')
@@ -336,12 +323,6 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-}
-
-function meshToThreejs(mesh, material) {
-  const loader = new THREE.BufferGeometryLoader()
-  const geometry = loader.parse(mesh.toThreejsJSON())
-  return new THREE.Mesh(geometry, material)
 }
 
 function showSpinner(enable) {

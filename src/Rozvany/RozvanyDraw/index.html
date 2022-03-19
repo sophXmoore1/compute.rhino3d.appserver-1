@@ -93,6 +93,30 @@
             button:hover{
                 cursor: pointer;
             }
+            .info{
+            background-color: rgba(222, 222, 222, 0.5);
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            font-size: 12px;
+            font-weight: none;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #info{
+            color: rgb(253,253,150);
+            width: 100px;
+        }
+
+        #info:hover + .info{
+            display: block;
+        }
+
+        #info:hover{
+            cursor: pointer;
+        }
 
         </style>
     </head>
@@ -101,7 +125,18 @@
         <div id = "title">
             <a href= "../" style = "color:white; text-decoration: none">Rozvany</a>
             <br>
-            <div style="color:rgb(139,211,230)">.Draw</div>
+            <div id = info style="color:rgb(139,211,230)">.Draw</div>
+            <div class = "info">
+                Optimal Structural Layout Genenerator
+                <br>
+                based on column location
+                <br>
+                yellow: negative curvature
+                <br>
+                blue: positive curvature
+                <br>
+                pink: curvature
+            </div>
         </div>
         <div id="container">
                 <p id = "directions"></p>
