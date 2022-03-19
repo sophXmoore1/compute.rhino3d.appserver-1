@@ -108,7 +108,7 @@ rhino3dm().then(async m => {
 //slider change
 function onSliderChange() {
   // show spinner
-  document.getElementById('loader').style.display = 'block'
+  showSpinner(true)
   compute()
 }
 var type = 1;
@@ -124,6 +124,7 @@ function AssignType(e)
   if (e.target.id == "hexagon"){
     type = 2;
   }
+  showSpinner(true)
   compute()
 }
 
