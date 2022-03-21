@@ -6,9 +6,9 @@ It will consist of three different part:
 
 1. Users can **play** with the size and boundary conditions of a rectangular floor plan (already implemented last session)
 2. Users can **draw** their own floor plan and place their own columns and walls by clicking within the canvas.
-3. Users can **upload** their own Rhino file which contains a their own floor layout consisting of lines, curves, and points.
+3. Users can modify a **grid** of column
 
-After playing, drawing, or uploading, an optimal structural framing layout will be computed and outputed on the screen with the option for the user to download the results.
+After playing, drawing, or modifyung their grid, an optimal structural framing layout will be computed and outputed on the screen with the option for the user to download the results.
 
 ## Plug-ins
 None
@@ -28,18 +28,31 @@ leftFix (-1, 0 1)
 A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.
 
 **DRAW INPUTS**
-Points - to be assigned by the user in the canvas which represent column placements. 2 Points - to be assigned by the user in the canvas which are the end point of a line to represent a boundary or a wall. 
-3 Points - to be assigned by the user in the canvas to form an arch which can represent a boundary or a wall.
+All inputs are drawn by the user into the canvas
+
+Boundary Points - At least three points that make up the boundary vertices.
+Column Points - points within the boundary that represent column placement
+Line Support Points - At least two points that make up the end points of a line or polyline
 
 **Draw OUTPUTS**
 A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.
 
-**UPLOAD INPUTS**
-A rhino file of points, lines, and curves each on their own layer to be pulled grasshopper via geometry pipeline.
+**Grid INPUTS**
+Number of points in X
+Number of points in Y
+Spacing between points
 
-**UPLOAD OUTPUTS**
-A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.
+Grid Spacing: Determined by stream filter
+    Triangular Grid (stream filter value: 0)
+    Square Grid (stream filter value: 1)
+    Hexagon Grid (stream filter value: 2)
 
+**Grid OUTPUTS**
+A series of colored meshes that reprersents different curvature region types.
+
+**Rozvany** is a project of IAAC, Institute for Advanced Architecture of Catalonia developed in the Master In Advanced Computation For Architecture & Design 2021/22 by
+Student: Sophie Moore   
+Lead Faculty:  David Leon and Hesham Shawqy
 
 
 
