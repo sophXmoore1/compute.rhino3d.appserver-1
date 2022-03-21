@@ -29,7 +29,7 @@ downloadButton.onclick = download
 
 // event listeners
 const addBoundary = document.getElementById('boundary')
-addBoundary.addEventListener('click', AddBoundary)
+//addBoundary.addEventListener('click', AddBoundary)
 
 const freeBoundary = document.getElementById('Frboundary')
 freeBoundary.addEventListener('click', AssnBoundType)
@@ -54,8 +54,8 @@ window.addEventListener('keyup', Close)
 
 ////Button Appearance Features////////
 
-const geometryButton = document.getElementById('boundary');
-geometryButton.addEventListener('mouseup', boundContent, false)
+const boundaryButton = document.getElementById('boundary');
+boundaryButton.addEventListener('mouseup', boundContent, false)
 var geometryClicked = 0;
 
 function boundContent(e){
@@ -79,16 +79,19 @@ function AssnBoundType(e){
         var Type = 0;
         pinnedBoundary.disabled = true
         fixedBoundary.disabled = true
+        AddBoundary()
     }
     if ($boundType == 'Piboundary'){
         var Type = 1;
         freeBoundary.disabled = true
         fixedBoundary.disabled = true
+        AddBoundary()
     }
     if ($boundType == 'Fiboundary'){
         var Type = 2;
         freeBoundary.disabled = true
         pinnedBoundary.disabled = true
+        AddBoundary()
     }
     data.inputs['boundType'].push(Type)
     document.getElementById('boundary').nextElementSibling.nextElementSibling.style.display = "none"
@@ -319,11 +322,6 @@ function onClickLine(event) {
         }
     }
 
-    for (let i = 1; i<splitLength; i++){
-        data.inputs['splitIndex'][i] = data.inputs['splitIndex'][i]-data.inputs['splitIndex'][i-1]
-        console.log('dfhdk')
-    }
-
     console.log(data.inputs)
 
 
@@ -340,7 +338,7 @@ function onClickLine(event) {
 }
 
 function NewLine() {
-    document.body.style.cursor = "crosshair"
+    document.body.style.cursor = "crosshair" 
     document.getElementById('directions').innerText = ""
     data.inputs['splitIndex'].push(numLinePoints)
     console.log(data.inputs)
