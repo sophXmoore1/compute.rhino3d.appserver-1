@@ -9,7 +9,7 @@ const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 //Define Variables
-const definition = 'RozvanyDraw01.gh'
+const definition = 'RozvanyDraw01x.gh'
 const mouse = new THREE.Vector3()
 const canvasContainer = document.querySelector('#canvasContainer')
 
@@ -31,6 +31,13 @@ downloadButton.onclick = download
 const addBoundary = document.getElementById('boundary')
 addBoundary.addEventListener('click', AddBoundary)
 
+const freeBoundary = document.getElementById('Frboundary')
+freeBoundary.addEventListener('click', AssnBoundType)
+const pinnedBoundary = document.getElementById('Piboundary')
+pinnedBoundary.addEventListener('click', AssnBoundType)
+const fixedBoundary = document.getElementById('Fiboundary')
+fixedBoundary.addEventListener('click', AssnBoundType)
+
 const addPoints = document.getElementById('column')
 addPoints.addEventListener('click', AddPoints)
 
@@ -45,6 +52,49 @@ reset.addEventListener('click', Reset)
 
 window.addEventListener('keyup', Close)
 
+////Button Appearance Features////////
+
+const geometryButton = document.getElementById('boundary');
+geometryButton.addEventListener('mouseup', boundContent, false)
+var geometryClicked = 0;
+
+function boundContent(e){
+  var $content = e.target.nextElementSibling.nextElementSibling.style;
+  if (geometryClicked == 0){
+    $content.display = "block"
+    geometryClicked = 1
+    return
+  }
+  if(geometryClicked == 1){
+    $content.display = "none"
+    geometryClicked = 0
+    return
+  }
+}
+///////////////////////////
+
+function AssnBoundType(e){
+    var $boundType = e.target.id;
+    if ($boundType == 'Frboundary'){
+        var Type = 0;
+        pinnedBoundary.disabled = true
+        fixedBoundary.disabled = true
+    }
+    if ($boundType == 'Piboundary'){
+        var Type = 1;
+        freeBoundary.disabled = true
+        fixedBoundary.disabled = true
+    }
+    if ($boundType == 'Fiboundary'){
+        var Type = 2;
+        freeBoundary.disabled = true
+        pinnedBoundary.disabled = true
+    }
+    data.inputs['boundType'].push(Type)
+    document.getElementById('boundary').nextElementSibling.nextElementSibling.style.display = "none"
+    geometryClicked = 0
+}
+
 //starting disabled buttons
 addPoints.disabled = true;
 addLine.disabled = true;
@@ -56,6 +106,7 @@ downloadButton.disabled = true;
 let data = {}
 data.definition = definition
 data.inputs = {
+    'boundType': [],
     'boundaryPoints': [],
     'colPoints': [],
     'lnPoints': [],
@@ -141,6 +192,11 @@ function AddLine() {
 
 function Reset() {
     addBoundary.disabled = false;
+    freeBoundary.disabled = false;
+    pinnedBoundary.disabled = false;
+    fixedBoundary.disabled = false;
+    downloadButton.disabled = true;
+    reset.disabled = true;
 
     document.body.style.cursor = "auto"
     document.getElementById('directions').innerText = ""
@@ -262,6 +318,14 @@ function onClickLine(event) {
             points.push(lineVectors[lineVectors.length - 1])
         }
     }
+
+    for (let i = 1; i<splitLength; i++){
+        data.inputs['splitIndex'][i] = data.inputs['splitIndex'][i]-data.inputs['splitIndex'][i-1]
+        console.log('dfhdk')
+    }
+
+    console.log(data.inputs)
+
 
     const circGeometry = new THREE.CircleGeometry(5, 32);
     const circle = new THREE.Mesh(circGeometry, material);

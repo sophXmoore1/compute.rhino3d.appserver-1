@@ -1,34 +1,60 @@
-![GitHub package.json version](https://img.shields.io/github/package-json/v/mcneel/compute.rhino3d.appserver/main?label=version&style=flat-square)
-![node-current (scoped)](https://img.shields.io/badge/dynamic/json?label=node&query=engines.node&url=https%3A%2F%2Fraw.githubusercontent.com%2Fmcneel%2Fcompute.rhino3d.appserver%2Fmain%2Fpackage.json&style=flat-square&color=dark-green)
+# Project Brief
+This web app will allow people to explore Rozvany's optimal structural layouts. 
 
-# Rhino Compute AppServer
-A node.js server acting as a bridge between client apps and private compute.rhino3d servers.
+## Description
+It will consist of three different part:
 
-This app is intended to host one or more custom grasshopper definitions and serve as the API that client applications can call to have definitions solved with modified input parameters.
+1. Users can **play** with the size and boundary conditions of a rectangular floor plan (already implemented last session)
+2. Users can **draw** their own floor plan and place their own columns and walls by clicking within the canvas.
+3. Users can modify a **grid** of column
 
-## Features
-- **Easy to get started**: fork/clone this repo and run it locally for testing or push to a service like Heroku for a production web server
-- **Easy to customize**: fork this repo, place your custom grasshopper definitions in the files directory and you now have a custom AppServer for your definitions.
-- **Caching**: Assuming definitions produce the same results when the same set of inputs are provided, the appserver caches all results in memory for faster response times.
-- **Timings**: Server-timing headers are returned to the client to help diagnose bottlenecks in the definition solving process.
+After playing, drawing, or modifyung their grid, an optimal structural framing layout will be computed and outputed on the screen with the option for the user to download the results.
 
-## Getting Started
-1. Fork this repo
-2. Follow the [installation guide](docs/installation.md) to test and debug on your computer
-3. Follow the [Heroku hosting guide](docs/heroku.md) to push your customized AppServer to Heroku for a production web server
+## Plug-ins
+None
 
-## How and What Video
-- A workshop on using the appserver can be found at https://vimeo.com/442079095 - also [slides](https://docs.google.com/presentation/d/1nCbd87iA_D2ZCwoSirOYK3har6XUJHDUEIkt635btUU)
-- AECTECH 2020 workshop: https://youtu.be/At4BaIuEE3c - [slides](https://docs.google.com/presentation/d/1uY6DcYpBNrgxk8sbHHv1gy3IZWRmO7QF1rUT1XOl3s0/edit?usp=drivesdk)
+## Data Flow
 
-## Example
-When we have our testing server up and running, you can visit
+**PLAY INPUTS**
+X_Size (integer)  
+Y_Size (integer)  
+Spacing (double)  
+botFix (-1, 0 1)   
+rightFix (-1, 0 1)  
+topFix (-1, 0 1)  
+leftFix (-1, 0 1)  
 
-https://compute-rhino3d-appserver.herokuapp.com/examples/
+**PLAY OUTPUTS**
+A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.  
 
-To see a sample web application that passes three numbers based on slider positions to the AppServer for solving a grasshopper definition. Results are returned to the web page and new mesh visualizations are created.
+**DRAW INPUTS**
+All inputs are drawn by the user into the canvas
 
-----
-## Other Information
-- [API Endpoints](docs/endpoints.md) the server supports
-- [Client Code](docs/clientcode.md) example for calling the AppServer
+Boundary Points - At least three points that make up the boundary vertices.  
+Column Points - points within the boundary that represent column placement  
+Line Support Points - At least two points that make up the end points of a line or polyline  
+
+**Draw OUTPUTS**
+A series of a group of curves each with their own name attribute. Color is assigned in VScode based on the name.
+
+**Grid INPUTS**
+Number of points in X  
+Number of points in Y  
+Spacing between points  
+
+Grid Spacing: Determined by stream filter  
+    Triangular Grid (stream filter value: 0)  
+    Square Grid (stream filter value: 1)  
+    Hexagon Grid (stream filter value: 2)  
+
+**Grid OUTPUTS**
+A series of colored meshes that reprersents different curvature region types.
+
+**Rozvany** is a project of IAAC, Institute for Advanced Architecture of Catalonia developed in the Master In Advanced Computation For Architecture & Design 2021/22 by  
+Student: Sophie Moore     
+Lead Faculty:  David Leon and Hesham Shawqy  
+
+
+
+
+
