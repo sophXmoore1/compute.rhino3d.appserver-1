@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" href="data:,">
+        <title>hull.gh</title>
+        <style>
+/* /////////////////////////////////////////////////////////////////////////// */
+            body {
+                margin: 0;
+                font-family: monospace;
+                color: #f3f3f3;
+            }
+/* /////////////////////////////////////////////////////////////////////////// */
+            canvas { width: 100%; height: 100%; }
+            input[type=range] { width: 100%; }
+            #container { position: relative; }
+            #container canvas, #overlay { position: absolute; }
+            #overlay { z-index: 1; width: 100%; }
+/* /////////////////////////////////////////////////////////////////////////// */
+            #overlay div {
+              padding: 5px;
+              text-align-last: center;
+              }
+/* /////////////////////////////////////////////////////////////////////////// */
+            #loader {
+                border: 5px solid #f3f3f3; /* Light grey */
+                border-top: 5px solid #3d3d3d; /* Grey */
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 2;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+
+
+        <script type="importmap">
+          {
+              "imports": {
+              "three": "https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js",
+              "three/examples/jsm/controls/OrbitControls":"./jsm/controls/OrbitControls.js",
+              "three/examples/jsm/libs/stats.module":"./jsm/libs/stats.module.js"
+              
+              }
+          }
+      </script>
+      <script type="module" src="./script.js" defer></script>
+
+
+
+    </head>
+    <body>
+      <div id="loader"></div> 
+      <div id="container">
+          <div id="overlay">
+<!-- /////////////////////////////////////////////////////////////////////////// -->
+              <div>
+                  <h1>Upload 3DM file</h1>
+                  <input type="file" accept=".3dm" id="file-input" />
+              </div>
+              <div id="msg">Choose a .3dm file that has breps and/or extrusions ☝</div>
+              <div><button id="downloadButton" disabled>Download</button></div>
+              <!-- <div><a href="hull.gh" download="hull.gh.html">Save source code</a></div> -->
+<!-- /////////////////////////////////////////////////////////////////////////// -->
+          </div>
+      </div>
+    </body>
+</html>

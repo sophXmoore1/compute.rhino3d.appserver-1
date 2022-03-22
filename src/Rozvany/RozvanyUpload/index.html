@@ -7,9 +7,9 @@
     <link rel="shortcut icon" type = "image/x-icon" href="../images/favicon.ico">
     <style>
         body {
-            margin: 0;
             font-family:
                 Arial, Helvetica, sans-serif;
+            background-color: rgb(61,62,64);    
         }
 
         #container {
@@ -25,17 +25,9 @@
             bottom: 2%;
             transform: translate(-50%, 0);
             width: max-content;
-            background-color: rgba(198, 198, 198, 0.5);
+            background-color: rgba(151, 232, 195, 0.5);
             padding: 5px;
             border-radius: 40px;
-        }
-
-        #directions {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            bottom: 90px;
-            color: white;
         }
 
         #title {
@@ -82,7 +74,6 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
@@ -92,22 +83,10 @@
             float: left;
             padding: 5px;
             position: relative;
+            vertical-align: middle;
         }
 
         .geomContent {
-            position: absolute;
-            transform: translate(-80%, -100%);
-            top: -10px;
-            display: none;
-            color: white;
-            background-color: rgba(222, 222, 222, 0.5);
-            border-radius: 20px;
-            padding: 5px;
-            padding-left: 10px;
-            padding-right: 10px;
-            width: max-content;
-        }
-        .boundContent {
             position: absolute;
             transform: translate(0, -100%);
             top: -10px;
@@ -120,9 +99,9 @@
             padding-right: 10px;
             width: max-content;
         }
-        .downloadContent {
+        .content {
             position: absolute;
-            top: -100px;
+            top: -35px;
             left: 35px;
             display: none;
             color: white;
@@ -137,76 +116,12 @@
         button:hover+.content {
             display: block;
         }
+        input:hover+.content {
+            display: block;
+        }
 
         button:hover {
             cursor: pointer;
-        }
-
-        .radio-toolbar {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        /*hide circular radio buttons*/
-        .radio-toolbar input[type="radio"] {
-            opacity: 0;
-            position: fixed;
-            width: 0;
-        }
-
-        .radio-toolbar label {
-            vertical-align: middle;
-            background-color: #ddd;
-            color: black;
-            font-family: sans-serif, Arial;
-            border-radius: 40px;
-            margin-left: 5px;
-            margin-right: 5px;
-            width: 30px;
-            height: 26px;
-            border: 0px;
-            font-size: 20px;
-            padding-top: 0px;
-            text-align: center;
-            display: inline-block;
-            padding-top: 4px;
-        }
-
-        .radio-toolbar label:hover {
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .radio-toolbar input[type="radio"],
-        input[value="-1"]:checked+label {
-            background-color: rgb(11, 194, 5);
-            color: white;
-            border: 0px solid white;
-        }
-
-        .radio-toolbar input[type="radio"],
-        input[value="0"]:checked+label {
-            background-color: cyan;
-            color: black;
-            border: 0px solid white;
-        }
-
-        .radio-toolbar input[type="radio"],
-        input[value="1"]:checked+label {
-            background-color: blue;
-            color: white;
-            border: 0px solid white;
-        }
-
-        .radiolabel {
-            font-size: 20px;
-            display: inline-block;
-            text-align: center;
-            width: 20px;
-            font-weight: none;
-            color: white;
-            margin-left: 10px;
-            margin-right: 20px;
         }
 
         .slider {
@@ -228,7 +143,7 @@
 
         .sliderLabel {
             font-size: 14px;
-            width: 10px;
+            width: 0px;
             display: inline-block;
             font-weight: bold;
             color: white;
@@ -264,19 +179,19 @@
         }
         #errorMessage {
             position: absolute;
-            background-color: red;
             color: white;
-            font-size: 20px;
+            font-size: 16px;
             text-align: center;
             width: max-content;
-            top: 50%;
+            top: 100%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -110px);
+            display: none;
         }
         #geometry {
-            float: left;
+            
             margin: 5px;
-            padding-left: 7px;
+            
         }
 
         #boundary {
@@ -286,6 +201,63 @@
             vertical-align: middle;
             font-weight: bold;
         }
+
+        .info{
+            background-color: rgba(222, 222, 222, 0.5);
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            font-size: 12px;
+            font-weight: none;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+            margin-top: 10px;
+            width: 200px;
+        }
+
+        #info{
+            color: rgb(253,253,150);
+            width: 100px;
+        }
+
+        #info:hover + .info{
+            display: block;
+        }
+
+        #info:hover{
+            cursor: pointer;
+        }
+        .customUpload{
+            border-radius: 20px;
+            background-color: white;
+            font-size: 20px;
+            padding: 3px;
+            padding-left: 10px;
+            padding-right: 10px;
+            vertical-align: middle;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .customUpload:hover{
+            cursor: pointer;
+        }
+        .boundContent {
+            position: absolute;
+            transform: translate(0, -100%);
+            top: -10px;
+            display: none;
+            color: white;
+            background-color: rgba(222, 222, 222, 0.5);
+            border-radius: 20px;
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            width: max-content;
+        }
+
     </style>
 </head>
 
@@ -294,33 +266,80 @@
     <div id = "title">
         <a href= "../" style = "color:white; text-decoration: none">Rozvany</a>
         <br>
-        <div style="color:rgb(244,154,194)">.Upload</div>
+        <div id = info style="color:rgb(151, 232, 195)">.Upload</div>
+        <div class="info">
+            Upload a Rhino file of your own floor plan to be optimized. In the file represent elements in the following way: <br>
+            <br>
+            Boundary: planar surface <br>
+            Columns: points <br>
+            Line Supports: lines or polylines <br>
+            <br>
+            LEGEND
+            <hr>
+            -------- &nbsp&nbsp Postive Curvature <br>
+            -- --  -- &nbsp&nbsp Negative Curvature <br>
+        </div>
     </div>
 
     <div id="container">
         <p id="directions"></p>
         <div id="controls">
-            <div class="button">
+            <div class = "button" style = "margin-top: 8px; margin-left: 5px; margin-left: 5px">
+                <label for = 'upload' class = 'customUpload'>↑</label>
                 <input type = "file" accept = ".3dm" id="upload"/>
-                <div class="content">
+                <div class="content">Upload</div>
+            </div>
+            <div class="button">
+                <button id="boundary">❑</button>
+                <div class="content">Define Boundary</div>
+                <div class="boundContent">
+                    <div class="button">
+                        <button id="Frboundary">⦾</button>
+                        <div class="content">Free</div>
+                    </div>
+                    <div class="button">
+                        <button id="Piboundary">△</button>
+                        <div class="content">Pinned</div>
+                    </div>
+                    <div class="button">
+                        <button id="Fiboundary">=</button>
+                        <div class="content">Fixed</div>
+                    </div>
                 </div>
             </div>
             <div class="button">
-                <button id="compute">▦</button>
-                <div class="content">
+                <button id="geometry">≡</button>
+                <div class="content">Spacing
+                </div>
+                <div class="geomContent">
+                    <div id="geometry">
+                        <div>
+                            <label class="sliderLabel" for="spacing"></label>
+                            <input class="slider" type="range" id="spacing" name="spacing" min="0.5" max="2" value="1" step="0.1">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="button">
                 <button id="download">⤓</button>
-                <div class="downloadContent">Download</div>
+                <div class="content">Download</div>
             </div>
         </div>
         <div id="canvasContainer">
-            <div id="errorMessage"></div>
+            <div id="errorMessage">my message</div>
             <canvas></canvas>
         </div>
     </div>
-    <script type="module" src="script.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js",
+            "three/examples/jsm/controls/OrbitControls":"./jsm/controls/OrbitControls.js",
+            "three/examples/jsm/libs/stats.module":"./jsm/libs/stats.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="script01.js" defer></script>
 </body>
 
 </html>
