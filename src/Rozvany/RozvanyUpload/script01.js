@@ -25,7 +25,7 @@ fixedBoundary.addEventListener('click', AssnBoundType)
 
 // initialise 'data' object that will be used by compute()
 const data = {
-  definition: 'RozvanyUpload.gh',
+  definition: 'RozvanyUpload02.gh',
   inputs: {
     'lines': [], // start with an empty list (corresponds to "points" input)
     'points': [],  
@@ -399,7 +399,6 @@ function zoomCameraToSelection( camera, controls, selection, fitOffset = 1.2 ) {
   boundaryButton.disabled = false
   geomButton.disabled = false 
   downloadButton.disabled = false
-
   
 }
 

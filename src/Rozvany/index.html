@@ -81,21 +81,27 @@
             width: 150px;
             height: auto;
             position: absolute;
-            transform: translate(250px, -310px);
+            transform: translate(275px, -370px);
 
         }
         img.square {
             width: 200px;
             height: auto;
             position: absolute;
-            transform: translate(250px, -200px);
+            transform: translate(300px, -270px);
 
         }
         img.draw {
             width: 150px;
             height: auto;
             position: absolute;
-            transform: translate(250px, -100px);
+            transform: translate(320px, -165px);
+        }
+        img.upload {
+            width: 150px;
+            height: auto;
+            position: absolute;
+            transform: translate(280px, -80px);
         }
 
         .grid:hover > .top {
@@ -148,6 +154,9 @@
                 <div id = draw>
                     <a href = "./RozvanyDraw/"><img class="draw" src="images/Gray_Draw.png" alt="draw"></a>
                 </div>
+                <div id = upload>
+                    <a href = "./RozvanyUpload/"><img class="upload" src="images/Gray_Upload.png" alt="upload"></a>
+                </div>
             </div>
         </div>
     </div>
@@ -164,6 +173,9 @@
     const draw = document.getElementById("draw")
     draw.addEventListener('mouseover', Highlight)
     draw.addEventListener('mouseout', GrayOut)
+    const upload = document.getElementById("upload")
+    upload.addEventListener('mouseover', Highlight)
+    upload.addEventListener('mouseout', GrayOut)
     
     function Highlight(e){
         if (e.target.alt == "grid"){
@@ -174,6 +186,9 @@
         }
         if (e.target.alt == "draw"){
             e.target.src = "./images/Color_Draw.png"
+        }
+        if (e.target.alt == "upload"){
+            e.target.src = "./images/Color_Upload.png"
         }
         Animate()
     }
@@ -188,12 +203,14 @@
         if (e.target.alt == "draw"){
             e.target.src = "./images/Gray_Draw.png"
         }
+        if (e.target.alt == "upload"){
+            e.target.src = "./images/Gray_Upload.png"
+        }
         Stop()
     }
 
     function Animate(){
         document.getElementById("top").className = "animate"
-        console.log(document.getElementsByClassName("top"))
     }
 
     function Stop(){

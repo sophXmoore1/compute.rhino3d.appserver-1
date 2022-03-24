@@ -9,7 +9,7 @@ const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 //Define Variables
-const definition = 'RozvanyDraw01x.gh'
+const definition = 'RozvanyDraw02.gh'
 const mouse = new THREE.Vector3()
 const canvasContainer = document.querySelector('#canvasContainer')
 
