@@ -77,49 +77,31 @@
             }
         }
 
-        :root{--bulbxwidth: 40px;
-            --bulbxspacing: 15px;
-            --bulbxstart: 190px;
-            --bulbystart: -335px
-        }
-
-
         img.grid {
-            width: var(--bulbxwidth);
+            width: 150px;
             height: auto;
             position: absolute;
-            transform: translate(var(--bulbxstart), var(--bulbystart));
+            transform: translate(275px, -370px);
 
         }
         img.square {
-            width: var(--bulbxwidth);
+            width: 200px;
             height: auto;
             position: absolute;
-            transform: translate(calc(var(--bulbxstart) + (var(--bulbxwidth) + var(--bulbxspacing))*1), var(--bulbystart));
+            transform: translate(300px, -270px);
 
         }
         img.draw {
-            width: var(--bulbxwidth);
+            width: 150px;
             height: auto;
             position: absolute;
-            transform: translate(calc(var(--bulbxstart) + (var(--bulbxwidth) + var(--bulbxspacing))*2), var(--bulbystart));
+            transform: translate(320px, -165px);
         }
         img.upload {
-            width: var(--bulbxwidth);
+            width: 150px;
             height: auto;
             position: absolute;
-            transform: translate(calc(var(--bulbxstart) + (var(--bulbxwidth) + var(--bulbxspacing))*3), var(--bulbystart));
-        }
-        img.speak {
-            width: 125px;
-            height: auto;
-            position: absolute;
-            transform: translate(250px, -225px);
-            display: none;
-        }
-        img.question{
-            width:30px;
-            transform: translate(130px, 25px);
+            transform: translate(280px, -80px);
         }
 
         .grid:hover > .top {
@@ -132,15 +114,9 @@
 
             }
         }
-        #question{
-            width: max-content;
-        }
-
-        #question:hover + .content{
+        
+        #prager:hover + .content{
         display: block;
-        }
-        .question:hover{
-            cursor: pointer;
         }
 
         .content{
@@ -148,12 +124,10 @@
             display: none;
             top: 50%;
             left: 50%;
-            transform: translate(10px,10px);
+            transform: translate(-130px,60px);
             position: absolute;
-            width: max-content;
-            font-size: 16px;
-            font-style: italic;
-            background-color: black
+            width: 300px;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -167,28 +141,22 @@
                     <img class="top" src="images/PragerTop.png" alt="top">
                 </div>
             </div>
+            <div class = content>
+                Prager says... click on Grid, Square or Draw to explore different optimal strucutural layouts developed based on work from George Rozvany
+            </div>
             <div id="gray">
                 <div id = grid>
-                    <a href = "./RozvanyGrid/"><img class="grid" src="images/GridOff.png" alt="grid"></a>
+                    <a href = "./RozvanyGrid/"><img class="grid" src="images/Gray_Grid.png" alt="grid"></a>
                 </div>
                 <div id = square>
-                    <a href = "./RozvanySquare/"><img class="square" src="images/SquareOff.png" alt="square"></a>
+                    <a href = "./RozvanySquare/"><img class="square" src="images/Gray_Square.png" alt="square"></a>
                 </div>
                 <div id = draw>
-                    <a href = "./RozvanyDraw/"><img class="draw" src="images/DrawOff.png" alt="draw"></a>
+                    <a href = "./RozvanyDraw/"><img class="draw" src="images/Gray_Draw.png" alt="draw"></a>
                 </div>
                 <div id = upload>
-                    <a href = "./RozvanyUpload/"><img class="upload" src="images/UploadOff.png" alt="upload"></a>
+                    <a href = "./RozvanyUpload/"><img class="upload" src="images/Gray_Upload.png" alt="upload"></a>
                 </div>
-                <div id = speak>
-                    <img class="speak" src="images/SpeakDraw.png" alt="speak"></a>
-                </div>
-                <div id = question>
-                    <img class="question" src="images/QuestionOff.png" alt="Qoff">
-                    </div>
-                    <div class = content>
-                        PRAGER SAYS... CLICK A LIGHTBULB!
-                    </div>
             </div>
         </div>
     </div>
@@ -208,47 +176,37 @@
     const upload = document.getElementById("upload")
     upload.addEventListener('mouseover', Highlight)
     upload.addEventListener('mouseout', GrayOut)
-    const speak = document.getElementById('speak')
-
-    console.log(speak.children[0])
     
     function Highlight(e){
         if (e.target.alt == "grid"){
-            e.target.src = "./images/GridOn.png"
-            speak.children[0].src = "./images/SpeakGrid.png"
+            e.target.src = "./images/Color_Grid.png"
         }
         if (e.target.alt == "square"){
-            e.target.src = "./images/SquareOn.png"
-            speak.children[0].src = "./images/SpeakSquare.png"
+            e.target.src = "./images/Color_Square.png"
         }
         if (e.target.alt == "draw"){
-            e.target.src = "./images/DrawOn.png"
-            speak.children[0].src = "./images/SpeakDraw.png"
+            e.target.src = "./images/Color_Draw.png"
         }
         if (e.target.alt == "upload"){
-            e.target.src = "./images/UploadOn.png"
-            speak.children[0].src = "./images/SpeakUpload.png"
+            e.target.src = "./images/Color_Upload.png"
         }
         Animate()
-        speak.children[0].style.display = "block"
-        
     }
 
     function GrayOut(e){
         if (e.target.alt == "grid"){
-            e.target.src = "./images/GridOff.png"
+            e.target.src = "./images/Gray_Grid.png"
         }
         if (e.target.alt == "square"){
-            e.target.src = "./images/SquareOff.png"
+            e.target.src = "./images/Gray_Square.png"
         }
         if (e.target.alt == "draw"){
-            e.target.src = "./images/DrawOff.png"
+            e.target.src = "./images/Gray_Draw.png"
         }
         if (e.target.alt == "upload"){
-            e.target.src = "./images/UploadOff.png"
+            e.target.src = "./images/Gray_Upload.png"
         }
         Stop()
-        speak.children[0].style.display = "none"
     }
 
     function Animate(){

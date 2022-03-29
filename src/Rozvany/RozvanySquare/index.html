@@ -153,19 +153,16 @@
         }
 
         .radio-toolbar label {
-            vertical-align: middle;
             background-color: #ddd;
             color: black;
             font-family: sans-serif, Arial;
-            border-radius: 5px;
-            margin-left: 1px;
-            margin-right: 1px;
-            height: 8px;
+            border-radius: 14px;
             border: 0px;
-            font-size: 8px;
-            padding: 5px;
+            font-size: 14px;
+            padding: 5px 8px 5px 8px;
             text-align: center;
             display: inline-block;
+            font-style: bold;
             
         }
 
@@ -196,14 +193,14 @@
         }
 
         .radiolabel {
-            font-size: 12px;
+            font-size: 14px;
             display: inline-block;
             text-align: center;
             width: 20px;
             font-weight: none;
             color: white;
-            margin-left: 10px;
-            margin-right: 20px;
+            margin-left: 5px;
+            margin-right: 5px;
             font-weight: bold;
         }
 
@@ -294,7 +291,7 @@
             border-radius: 10px;
             display: none;
             margin-top: 10px;
-            width: 260px;
+            width: 275px;
         }
 
         #info:hover + .info{
@@ -314,15 +311,15 @@
         <br>
         <div id = info style="color:rgb(244,154,194)">.Square</div>
         <div class = "info">
-            Explore how changing boundary fixities and dimensions effects the optimal structural layout
+            Explore optimal structural layouts for square and rectangular boundaries by varying boundary support condition radios as well as aspect ratio and spacing sliders.
             <br>
             <br>
             LEGEND
             <hr>
-            -------- &nbsp&nbsp Postive Curvature <br>
-            -- --  -- &nbsp&nbsp Negative Curvature <br>
-            <span style = "color: rgb(235, 52, 219)">&nbsp&nbsp&nbsp&nbsp■&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>Junction Center - Positive Curvature<br>
-            <span style = "color: rgb(240, 233, 26)">&nbsp&nbsp&nbsp&nbsp■&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>Edge Branch<br>
+            ⚊ &nbsp&nbsp Postive Curvature <br>
+            ⚋ &nbsp&nbsp Negative Curvature <br>
+            <span style = "color: rgb(235, 52, 219)">&nbsp&nbsp&nbsp&nbsp■&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>Junction- Positive Curvature Region<br>
+            <span style = "color: rgb(240, 233, 26)">&nbsp&nbsp&nbsp&nbsp■&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>Exterior Branch<br>
             <span style = "color: rgb(235, 152, 52)">&nbsp&nbsp&nbsp&nbsp■&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>Interior Branch<br>
         </div>
     </div>
@@ -355,51 +352,51 @@
                 <button id="boundary">⯐</button>
                 <div class="boundContent">
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Top:</span>
+                        <span class="radiolabel">^</span>
                         <input type="radio" id="topFree" name="radioTop" value="-1">
-                        <label for="topFree">Free</label>
+                        <label for="topFree">F</label>
 
                         <input type="radio" id="topPin" name="radioTop" value="0" checked>
-                        <label for="topPin">Pinned</label>
+                        <label for="topPin">P</label>
 
                         <input type="radio" id="topFixed" name="radioTop" value="1">
-                        <label for="topFixed">Fixed</label>
+                        <label for="topFixed">C</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Left:</span>
+                        <span class="radiolabel"><</span>
                         <input type="radio" id="leftFree" name="radioLeft" value="-1">
-                        <label for="leftFree">Free</label>
+                        <label for="leftFree">F</label>
 
                         <input type="radio" id="leftPin" name="radioLeft" value="0" checked>
-                        <label for="leftPin">Pinned</label>
+                        <label for="leftPin">P</label>
 
                         <input type="radio" id="leftFixed" name="radioLeft" value="1">
-                        <label for="leftFixed">Fixed</label>
+                        <label for="leftFixed">C</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Right:</span>
+                        <span class="radiolabel">></span>
                         <input type="radio" id="rightFree" name="radioRight" value="-1">
-                        <label for="rightFree">Free</label>
+                        <label for="rightFree">F</label>
 
                         <input type="radio" id="rightPin" name="radioRight" value="0" checked>
-                        <label for="rightPin">Pinned</label>
+                        <label for="rightPin">P</label>
 
                         <input type="radio" id="rightFixed" name="radioRight" value="1">
-                        <label for="rightFixed">Fixed</label>
+                        <label for="rightFixed">C</label>
                     </div>
 
                     <div class="radio-toolbar">
-                        <span class="radiolabel">Bot:</span>
+                        <span class="radiolabel">v</span>
                         <input type="radio" id="botFree" name="radioBottom" value="-1">
-                        <label for="botFree">Free</label>
+                        <label for="botFree">F</label>
 
                         <input type="radio" id="botPin" name="radioBottom" value="0" checked>
-                        <label for="botPin">Pinned</label>
+                        <label for="botPin">P</label>
 
                         <input type="radio" id="botFixed" name="radioBottom" value="1">
-                        <label for="botFixed">Fixed</label>
+                        <label for="botFixed">C</label>
                     </div>
                 </div>
             </div>
