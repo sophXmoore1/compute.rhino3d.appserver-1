@@ -269,13 +269,15 @@ let scene, camera, renderer, controls, container;
 function init() {
 
   // Rhino models are z-up, so set this as the default
-  THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+  THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 1, 0 );
 
   // create a scene and a camera
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x3d3e40);
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500)
-  camera.position.z = 15;
+
+  const frustumSize = 20
+  const aspect = window.innerWidth / window.innerHeight;
+  camera = new THREE.OrthographicCamera(frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1, 1);
 
   // create the renderer and add it to the html
 
@@ -291,11 +293,7 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement)
 
   // add a directional light
-  const directionalLight = new THREE.DirectionalLight(0xffffff)
-  directionalLight.intensity = 2
-  scene.add(directionalLight)
-
-  const ambientLight = new THREE.AmbientLight()
+  const ambientLight = new THREE.AmbientLight(0xffffff, 3)
   scene.add(ambientLight)
 
   animate()

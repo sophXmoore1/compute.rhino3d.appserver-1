@@ -180,13 +180,17 @@ let scene, camera, renderer, controls
 function init() {
 
     // Rhino models are z-up, so set this as the default
-    THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+    THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 1, 0 );
 
     // create a scene and a camera
     scene = new THREE.Scene()
     scene.background = new THREE.Color(0x3d3e40);
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000)
-    camera.position.set(1, -1, 1) // like perspective view
+    //camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000)
+    //camera.position.set(1, -1, 1) // like perspective view
+
+    const frustumSize = 100
+    const aspect = window.innerWidth / window.innerHeight;
+    camera = new THREE.OrthographicCamera(frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1, 1);
 
     // create the renderer and add it to the html
     //container = document.getElementById('container');
@@ -321,7 +325,7 @@ function collectResults(responseJson) {
         downloadButton.disabled = false
 
         // zoom to extents
-        zoomCameraToSelection(camera, controls, scene.children)
+        //zoomCameraToSelection(camera, controls, scene.children)
     })
 }
 
@@ -364,6 +368,8 @@ function onWindowResize() {
 /**
  * Helper function that behaves like rhino's "zoom to selection", but for three.js!
  */
+
+/*
 function zoomCameraToSelection( camera, controls, selection, fitOffset = 1.2 ) {
   
   const box = new THREE.Box3();
@@ -401,6 +407,7 @@ function zoomCameraToSelection( camera, controls, selection, fitOffset = 1.2 ) {
   downloadButton.disabled = false
   
 }
+*/
 
 /**
  * This function is called when the download button is clicked

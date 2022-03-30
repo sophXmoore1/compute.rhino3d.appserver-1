@@ -42,7 +42,7 @@
         #bottom {
             position: absolute;
             top: 52%;
-            left: 35%;
+            left: 40%;
         }
 
         img.bottom {
@@ -184,8 +184,8 @@
                     <img class="speak" src="images/SpeakDraw.png" alt="speak"></a>
                 </div>
                 <div id = question>
-                    <img class="question" src="images/QuestionOff.png" alt="Qoff">
-                    </div>
+                    <img class="question" src="images/QuestionOff.png" alt="question">
+                </div>
                     <div class = content>
                         PRAGER SAYS... CLICK A LIGHTBULB!
                     </div>
@@ -209,12 +209,15 @@
     upload.addEventListener('mouseover', Highlight)
     upload.addEventListener('mouseout', GrayOut)
     const speak = document.getElementById('speak')
-
-    console.log(speak.children[0])
+    const question = document.getElementById('question')
+    question.addEventListener('mouseover', QIn)
+    question.addEventListener('mouseout', QOut)
     
     function Highlight(e){
+        console.log(e.target)
         if (e.target.alt == "grid"){
             e.target.src = "./images/GridOn.png"
+            console.log('here')
             speak.children[0].src = "./images/SpeakGrid.png"
         }
         if (e.target.alt == "square"){
@@ -232,6 +235,18 @@
         Animate()
         speak.children[0].style.display = "block"
         
+    }
+
+    function QIn(e){
+        if (e.target.alt == "question"){
+            question.children[0].src = "./images/QuestionOn.png"
+        }
+    }
+
+    function QOut(e){
+        if (e.target.alt == "question"){
+            question.children[0].src = "./images/QuestionOff.png"
+        }
     }
 
     function GrayOut(e){
