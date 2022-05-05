@@ -2,13 +2,14 @@
 This web app will allow people to explore Rozvany's optimal structural layouts. 
 
 ## Description
-It will consist of three different part:
+It will consist of four different part:
 
-1. Users can **play** with the size and boundary conditions of a rectangular floor plan (already implemented last session)
+1. Users can **play** with the size and boundary conditions of a rectangular floor plan 
 2. Users can **draw** their own floor plan and place their own columns and walls by clicking within the canvas.
 3. Users can modify a **grid** of column
+4. Users can **upload** their own rhino geometry
 
-After playing, drawing, or modifyung their grid, an optimal structural framing layout will be computed and outputed on the screen with the option for the user to download the results.
+After playing, drawing, uploading, or modifying their grid, an optimal structural framing layout will be computed and outputed on the screen with the option for the user to download the results.
 
 ## Plug-ins
 None
@@ -49,6 +50,7 @@ Grid Spacing: Determined by stream filter
 
 **Grid OUTPUTS**
 A series of colored meshes that reprersents different curvature region types.
+
 
 **Rozvany** is a project of IAAC, Institute for Advanced Architecture of Catalonia developed in the Master In Advanced Computation For Architecture & Design 2021/22 by  
 Student: Sophie Moore     
