@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Model01</title>
+    <style>
+        body {
+            font-family:
+                Arial, Helvetica, sans-serif;
+            background-color: white;  
+            padding: 0;
+            margin: 0
+        }
+        #title{
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            height: 5vh;
+            width: 100%;
+            border-bottom: 2px solid black;
+            margin-bottom: 5px;
+        }
+        #grid{
+            display: flex;
+            width: 100%;
+            height: 75vh;
+        }
+        #leftGrid {
+            float: left;
+            display: flex;
+            height: 100%;
+            width: 50%;
+            background-color: #d3d3d3;
+        }
+        #rightGrid{
+            position: relative;
+            display: flex;
+            height: 100%;
+            width: 50%;
+            float: right;
+        }
+        #top{
+            position: absolute;
+            top: 0;
+            height: 45%;
+            width: 100%;
+        }
+        #bottom{
+            position: absolute;
+            bottom: 0;
+            height: 45%;
+            width: 100%;
+        }
+        #content{
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        #timeline{
+            padding-top: 10px;
+            margin: 10px;
+            position: relative;
+            width: 100%;
+            height: 15vh;
+        }
+        .sliderDiv{
+            justify-content: center;
+            display: flex;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 80%;
+            height: 15px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin-left: 10px;
+            
+            }
+            .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 25px;
+            background: #EF9390;
+            cursor: pointer;
+            }
+
+            .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #EF9390;
+            cursor: pointer;
+            }
+            #selections{
+                padding: 5px;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                height: 30px;
+            }
+            canvas{
+            display: block;
+            height: 100%;
+            }
+            #logoheader{
+                padding-left: 20px;
+                width: 50px;
+                height: auto;
+            }
+            
+
+    </style>
+</head>
+
+<body>
+    <div id = "title">
+        <img id = "logoheader" src="logo_pastel.PNG">
+        <h1 style = "width: fit-content; padding: 0px; display: inline; text-align: center">Difference Engine</h3>
+    </div>
+    <div id="grid">
+        <div id = content>
+            <div id = "leftGrid">
+            </div>
+            <div id = "rightGrid">
+                <div id = top>
+                    <div id = "selections">
+                        <select name="category" id="category" style="margin: 2px;">
+                            <option value="All">All</option>
+                            <option value="Structural Framing">Structural Framing</option>
+                            <option value="Columns">Columns</option>
+                            <option value="Floors">Floors</option>
+                            <option value="Walls">Walls</option>
+                        </select>
+                    </div>
+                </div>
+                <div id = bottom></div>
+            </div>
+        </div>
+    </div>
+    <div id = "timeline">
+        <div class = "sliderDiv">
+            <label class="sliderLabel" for="startPeriod">Start Period</label>
+            <input class="slider" type="range" id="startPeriod" name="startPeriod" min="1" max="7" value="2" step="1">
+        </div>
+        <br>
+        <div class = "sliderDiv">
+            <label class="sliderLabel" for="endPeriod">End Period</label>
+            <input class="slider" type="range" id="endPeriod" name="endPeriod" min="1" max="7" value="4" step="1">
+        </div>
+    </div>
+    
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
